@@ -285,6 +285,23 @@ class BookingStepper extends Component
         return $this->isTimeSlotAvailable($this->start_time, $time);
     }
 
+
+    public function hasAvailableEndTime($startTime)
+    {
+        if (!$this->selectedRoom || !$this->selectedDate) {
+            return true;
+        }
+
+        // ตรวจสอบว่ามี end time available หรือไม่
+        foreach ($this->availableTimes as $endTime) {
+            if ($endTime > $startTime && $this->isTimeSlotAvailable($startTime, $endTime)) {
+                return true; // มี end time available อย่างน้อย 1 ช่วง
+            }
+        }
+
+        return false; // ไม่มี end time available เลย
+    }
+
     public function selectTime($type, $time)
     {
         $this->resetErrorBag();
@@ -333,6 +350,16 @@ class BookingStepper extends Component
         $this->nextStep();
     }
 
+    public function getIsFormValidProperty()
+    {
+        return !empty($this->name) &&
+            !empty($this->email) &&
+            !empty($this->phone) &&
+            !$this->getErrorBag()->has('name') &&
+            !$this->getErrorBag()->has('email') &&
+            !$this->getErrorBag()->has('phone');
+    }
+
     public function submitBooking()
     {
         $this->validate([
@@ -340,7 +367,7 @@ class BookingStepper extends Component
             'room_id' => 'required|exists:rooms,id',
             'start_time' => 'required',
             'end_time' => 'required|after:start_time',
-            'name' => 'required|min=2',
+            'name' => 'required',
             'email' => 'required|email',
             'phone' => ['required', 'regex:/^(\+66|0)[0-9]{8,9}$/'],
         ]);

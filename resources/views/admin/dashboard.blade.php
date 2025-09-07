@@ -19,7 +19,7 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div class="bg-white shadow rounded-lg p-6">
                 <h2 class="text-xl font-semibold mb-2">Total Users</h2>
-                <div class="text-3xl font-bold">{{ $totalUsers?? '-' }}</div>
+                <div class="text-3xl font-bold">{{ $totalUsers ?? '-' }}</div>
             </div>
             <div class="bg-white shadow rounded-lg p-6">
                 <h2 class="text-xl font-semibold mb-2">Total Bookings</h2>
@@ -31,39 +31,7 @@
             </div>
         </div>
         <div class="mt-10">
-            <h2 class="text-2xl font-bold mb-4">Recent Bookings</h2>
-            <div class="bg-white shadow rounded-lg p-6">
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead>
-                        <tr>
-                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">User</th>
-                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Room</th>
-                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
-                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
-                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($recentBookings ?? [] as $booking)
-                        <tr>
-                            <td class="px-4 py-2">{{ $booking->user->name ?? '-' }}</td>
-                            <td class="px-4 py-2">{{ $booking->room->name ?? '-' }}</td>
-                            <td class="px-4 py-2">{{ $booking->date }}</td>
-                            <td class="px-4 py-2">{{ ucfirst($booking->status) }}</td>
-                            <td class="px-4 py-2">
-                                <button wire:click="" class="fa-solid fa-square-check text-green-500 hover:text-green-700 mr-2"></button>
-
-                                <button wire:click="" class="fa-solid fa-square-xmark text-red-600 hover:text-red-700 rounded"></button>
-                            </td>
-                        </tr>
-                        @empty
-                        <tr>
-                            <td colspan="4" class="px-4 py-2 text-center text-gray-500">No bookings found.</td>
-                        </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
+            @livewire('admin-bookings')
         </div>
 
         <div class="mt-10">

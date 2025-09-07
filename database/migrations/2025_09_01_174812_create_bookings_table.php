@@ -26,7 +26,7 @@ return new class extends Migration
             $table->time('start_time');            // เวลาเริ่ม
             $table->time('end_time');              // เวลาสิ้นสุด
 
-            $table->enum('status', ['pending', 'approved', 'cancelled'])->default('pending');
+            $table->enum('status', ['pending', 'approved', 'canceled'])->default('pending');
             $table->timestamps();
         });
     }
