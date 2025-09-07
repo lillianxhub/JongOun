@@ -29,13 +29,13 @@
                     cancelButtonColor: '#6c757d'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        Livewire.emit(detail.method, detail.id ?? null);
+                        Livewire.dispatch(detail.method, detail.id ?? null);
                     }
                 });
             });
 
             window.addEventListener('swal:success', event => {
-                const detail = event.detail;
+                const detail = event.detail[0];
                 const confirmColor = detail.color === 'green' ? '#28a745' : '#dc3545';
 
                 Swal.fire({

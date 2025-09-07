@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use Livewire\Attributes\On;
 use Livewire\Component;
 use App\Models\Room;
 use App\Models\RoomType;
@@ -30,10 +31,10 @@ class RoomManager extends Component
     #[Validate('required|numeric|min:0')]
     public $price = '';
 
-    protected $listeners = [
-        'updateRoom' => 'updateRoom',
-        'deleteRoom' => 'deleteRoom'
-    ];
+    // protected $listeners = [
+    //     'updateRoom' => 'updateRoom',
+    //     'deleteRoom' => 'deleteRoom'
+    // ];
 
     public function mount()
     {
@@ -106,7 +107,8 @@ class RoomManager extends Component
         ]);
     }
 
-    public function updateRoom()
+    #[On('updateRoom')]
+    public function updateRoom($id = null)
     {
         try {
             $this->validate();
@@ -156,10 +158,12 @@ class RoomManager extends Component
         ]);
     }
 
-    public function deleteRoom()
+    #[On('deleteRoom')]
+    public function deleteRoom($id = null)
     {
         try {
-            Room::findOrFail($this->deleteRoomId)->delete();
+            $roomId = $id ?? $this->deleteRoomId;
+            Room::findOrFail($roomId)->delete();
             $this->loadData();
 
             $this->dispatch('swal:success', [
