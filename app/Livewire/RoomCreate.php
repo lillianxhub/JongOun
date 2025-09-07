@@ -9,6 +9,7 @@ use App\Models\Room;
 class RoomCreate extends Component
 {
     public $showAddModal = false;
+
     public $addData = [
         'name' => '',
         'capacity' => '',
@@ -43,6 +44,11 @@ class RoomCreate extends Component
             'price' => '',
         ];
         $this->showAddModal = true;
+    }
+
+    public function closeAdd()
+    {
+        $this->showAddModal = false;
     }
 
     public function addRoom()
