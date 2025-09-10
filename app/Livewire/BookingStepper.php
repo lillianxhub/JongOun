@@ -35,9 +35,6 @@ class BookingStepper extends Component
     public $members;
     public $additional_request;
 
-    public $instruments;
-    public $selectedInstruments = [];
-
     public $total_price = 0;
 
     public $currentMonth;
