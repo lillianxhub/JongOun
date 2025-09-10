@@ -150,7 +150,7 @@
                             <div class="inline-flex items-center border rounded-lg overflow-hidden bg-gray-100">
                                 <span class="px-3">Price</span>
                                 <span class="bg-gray-700 text-white px-3 py-1 font-semibold">
-                                    {{ number_format($selectedRoom->price, 2) }}
+                                    ฿ {{ number_format($selectedRoom->price, 2) }}
                                 </span>
                             </div>
                         </div>
@@ -351,17 +351,17 @@
                 </div>
             </div>
             <div>
-                <h3 class="text-xl font-bold mb-4">Booking Summary</h3>
+                {{-- <h3 class="text-xl font-bold mb-4">Booking Summary</h3> --}}
                 <div class="grid grid-cols-2 gap-2 bg-gray-100 border p-4 rounded mb-4">
                     <div>
-                        <img src="./images/rooms/room1.png" alt="">
+                        <img class="h-full" src="./images/rooms/room1.png" alt="">
                     </div>
                     <div>
                         <h1 class="text-xl"><strong>{{ $selectedType->name ?? '-' }}</strong></h1>
                         <h2>{{ $selectedRoom->name ?? '-' }}</h2>
                         <p><strong class="fa-solid fa-user"></strong> {{ $selectedRoom->capacity ?? '-' }} people</p>
                         <p><strong class="fa-solid fa-calendar"></strong>
-                            {{ $selectedDate ? \Carbon\Carbon::parse($selectedDate)->format('F j, Y') : '-' }}</p>
+                            {{ $selectedDate ? \Carbon\Carbon::parse($selectedDate)->format('D j M, Y') : '-' }}</p>
                         <p><strong class="fa-solid fa-clock"></strong> {{ $start_time ?? '-' }} -
                             {{ $end_time ?? '-' }}
                             :
@@ -369,13 +369,21 @@
                         </p>
                     </div>
                 </div>
-                {{-- Additional instruments --}}
-                <div>
-
+                <h3 class="text-xl font-bold mb-4">Price details</h3>
+                {{-- Add instruments --}}
+                <div class="border p-4 mb-4">
+                    <div class="flex items-between mb-4">
+                        <button class="bg-green-500 px-4 py-2 rounded-lg">Add</button>
+                        <p>Cables</p>
+                    </div>
+                    <div class="flex items-between mb-4">
+                        <button class="bg-green-500 px-4 py-2 rounded-lg">Add</button>
+                        <p>Cables</p>
+                    </div>
                 </div>
                 <div class="border p-4">
                     <p><strong>Price per hour:</strong>
-                        {{ $selectedRoom->price ? number_format($selectedRoom->price, 2) . ' ฿' : '-' }}
+                        ฿ {{ $selectedRoom->price ? number_format($selectedRoom->price, 2) : '-' }}
                     </p>
                     <p>
                         Time in {{ $selectedRoom->name }} :
