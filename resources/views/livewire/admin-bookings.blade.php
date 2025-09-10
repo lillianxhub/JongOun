@@ -37,56 +37,78 @@
         });
     </script>
 
-    <h2 class="text-2xl font-bold mb-4">Recent Bookings</h2>
+    <h2 class="text-2xl font-bold mb-4 text-gray-900">Recent Bookings</h2>
     <div class="bg-white shadow rounded-lg p-6">
         <table class="min-w-full divide-y divide-gray-200">
             <thead>
                 <tr>
-                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">User</th>
-                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Room</th>
-                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
-                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Time</th>
-                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Price</th>
-                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
-                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Details</th>
-                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Action</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Room</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Time</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status
+                    </th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Details
+                    </th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action
+                    </th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody class="divide-y divide-gray-200 text-sm">
                 @forelse($recentBookings ?? [] as $booking)
-                    <tr>
-                        <td class="px-4 py-2">{{ $booking->user->name ?? '-' }}</td>
-                        <td class="px-4 py-2">{{ $booking->room->name ?? '-' }}</td>
-                        <td class="px-4 py-2">{{ $booking->date }}</td>
-                        <td class="px-4 py-2">
+                    <tr class="hover:bg-gray-50 transition-colors">
+                        <td class="px-4 py-3 font-medium text-gray-900">{{ $booking->user->name ?? '-' }}</td>
+                        <td class="px-4 py-3 text-gray-600">{{ $booking->room->name ?? '-' }}</td>
+                        <td class="px-4 py-3">{{ $booking->date }}</td>
+                        <td class="px-4 py-3">
                             {{ \Carbon\Carbon::parse($booking->start_time)->format('H:i') }} -
                             {{ \Carbon\Carbon::parse($booking->end_time)->format('H:i') }}
                         </td>
-                        <td class="px-4 py-2">{{ $booking->total_price }} ฿ </td>
-                        <td
-                            class="px-4 py-2 
-                        {{ $booking->status === 'approved' ? 'text-green-600' : ($booking->status === 'canceled' ? 'text-red-600' : 'text-yellow-500') }}">
-                            {{ ucfirst($booking->status) }}
+                        <td class="px-4 py-3 text-gray-900 font-semibold">
+                            ฿{{ number_format($booking->total_price, 2) }}
                         </td>
-
-                        <td class="px-4 py-2">
+                        <td class="px-4 py-3">
+                            <span
+                                class="px-2 py-1 rounded-full text-xs font-medium
+                            {{ $booking->status === 'approved'
+                                ? 'bg-green-100 text-green-700'
+                                : ($booking->status === 'canceled'
+                                    ? 'bg-red-100 text-red-700'
+                                    : 'bg-yellow-100 text-yellow-700') }}">
+                                {{ ucfirst($booking->status) }}
+                            </span>
+                        </td>
+                        <td class="px-4 py-3">
                             <button wire:click="showDetails({{ $booking->id }})"
-                                class="px-2 py-1 bg-black text-white border rounded hover:bg-white hover:text-black">Details</button>
+                                class="px-3 py-1 text-sm font-medium text-white bg-gray-800 rounded hover:bg-gray-900 transition">
+                                Details
+                            </button>
                         </td>
-
-                        <td class="px-4 py-2">
+                        <td class="px-4 py-3">
                             @if ($booking->status === 'pending')
-                                <button wire:click="confirmApprove({{ $booking->id }})"
-                                    class="fa-solid fa-square-check text-green-500 hover:text-green-700 mr-2"></button>
-
-                                <button wire:click="confirmCancel({{ $booking->id }})"
-                                    class="fa-solid fa-square-xmark text-red-600 hover:text-red-700 rounded"></button>
+                                <div class="flex space-x-2">
+                                    <button wire:click="confirmApprove({{ $booking->id }})"
+                                        class="text-green-600 hover:text-green-800 transition p-1 rounded-full hover:bg-green-100">
+                                        <i class="fa-solid fa-square-check"></i>
+                                    </button>
+                                    <button wire:click="confirmCancel({{ $booking->id }})"
+                                        class="text-red-600 hover:text-red-800 transition p-1 rounded-full hover:bg-red-100">
+                                        <i class="fa-solid fa-square-xmark"></i>
+                                    </button>
+                                </div>
                             @endif
                         </td>
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="6" class="px-4 py-2 text-center text-gray-500">No bookings found.</td>
+                        <td colspan="8" class="px-4 py-8 text-center text-gray-500">
+                            <div class="flex flex-col items-center">
+                                <i class="fa-solid fa-calendar-xmark text-4xl text-gray-300 mb-2"></i>
+                                <p class="text-lg">No bookings found</p>
+                                <p class="text-sm text-gray-400">Bookings will appear here once created</p>
+                            </div>
+                        </td>
                     </tr>
                 @endforelse
             </tbody>
@@ -94,7 +116,8 @@
 
         {{-- Modal --}}
         @if ($showModal && $selectedBooking)
-            <div class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+            <div class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
+                wire:click="closeModal">
                 <div class="bg-white rounded shadow-lg w-1/2 p-6 relative">
                     <button wire:click="closeModal"
                         class="absolute top-2 right-4 text-black hover:text-red-500 ">&times;</button>
@@ -128,11 +151,21 @@
                                 <td class="p-2">{{ $selectedBooking->members }}</td>
                             </tr>
                             <tr class="border-b">
+                                <td class="font-semibold p-2">Date</td>
+                                <td class="p-2">{{ $selectedBooking->date }}</td>
+                            </tr>
+                            <tr class="border-b">
+                                <td class="font-semibold p-2">Time</td>
+                                <td class="p-2">
+                                    {{ \Carbon\Carbon::parse($selectedBooking->start_time)->format('H:i') }} -
+                                    {{ \Carbon\Carbon::parse($selectedBooking->end_time)->format('H:i') }} </td>
+                            </tr>
+                            <tr class="border-b">
                                 <td class="font-semibold p-2">Status</td>
                                 <td class="p-2">
                                     <span
-                                        class="px-2 py-1 rounded text-white 
-                    {{ $selectedBooking->status === 'approved' ? 'bg-green-600' : ($selectedBooking->status === 'canceled' ? 'bg-red-600' : 'bg-yellow-500') }}">
+                                        class="px-2 py-1 rounded-full text-xs font-medium
+                    {{ $selectedBooking->status === 'approved' ? 'bg-green-100 text-green-700' : ($selectedBooking->status === 'canceled' ? 'bg-red-100 text-red-700' : 'bg-yellow-100 text-yellow-700') }}">
                                         {{ ucfirst($selectedBooking->status) }}
                                     </span>
                                 </td>

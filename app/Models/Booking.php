@@ -36,6 +36,13 @@ class Booking extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function instruments()
+    {
+        return $this->belongsToMany(Instrument::class, 'booking_intrument')
+            ->withPivot('quantity', 'price')
+            ->withTimestamps();
+    }
+
     // Scope: Query bookings for a specific user
     public function scopeForUser($query, $userId)
     {
