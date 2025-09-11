@@ -9,8 +9,8 @@
     @livewireStyles
 </head>
 
-<body class="font-sans antialiased bg-gray-100">
-        <!-- SweetAlert2 CSS & JS -->
+<body class="font-sans antialiased bg-gray-200">
+    <!-- SweetAlert2 CSS & JS -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -82,7 +82,7 @@
                 <a href="#service" class="mr-4 hover:text-blue-500 transition-colors">Service</a>
                 <a href="{{ route('booking') }}" class="mr-4 hover:text-blue-500 transition-colors">Booking</a>
                 <a href="#about" class="hover:text-blue-500">About</a>
-                <a href="{{ route('login') }}" class="mr-4">Login</a>
+                <a href="{{ route('login') }}" class="mr-4">Sign in</a>
                 <!-- <a href="{{ route('register') }}" class="text-blue-500">Register</a> -->
             @endauth
         </div>

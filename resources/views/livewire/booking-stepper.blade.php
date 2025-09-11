@@ -23,7 +23,7 @@
     <!-- Step 1 -->
     @if ($step == 1)
         <div class="flex flex-col items-center gap-4">
-            <div class="flex items-center justify-center gap-8 mb-4">
+            <div class="flex items-center justify-center gap-8 mb-0">
                 <button wire:click="prevMonth" class="text-2xl px-2"
                     @if ($currentYear == now()->year && $currentMonth <= now()->month) disabled class="opacity-70 cursor-not-allowed hover:bg-white" 
                     @else
@@ -36,7 +36,7 @@
                         class="fa-solid fa-arrow-right"></i></button>
             </div>
             <div class="w-full max-w-lg mx-auto p-2">
-                <div class="grid grid-cols-7 gap-2 mb-2 text-center text-gray-500 font-semibold">
+                <div class="grid grid-cols-7 gap-2 mb-2 text-center text-emerald-500 font-semibold">
                     <div>Mon</div>
                     <div>Tue</div>
                     <div>Wed</div>
@@ -45,24 +45,64 @@
                     <div>Sat</div>
                     <div>Sun</div>
                 </div>
-                <div class="grid grid-cols-7 gap-2 items-center justify-center">
+                {{-- <div class="grid grid-cols-7 gap-2 items-center justify-center">
                     @foreach ($calendarDays as $week)
                         @foreach ($week as $day)
                             @if (!$day['other'])
                                 <button
                                     wire:click="selectDay({{ $day['year'] }}, {{ $day['month'] }}, {{ $day['day'] }})"
-                                    class="w-100 h-10 flex items-center justify-center font-semibold transition
+                                    class="w-md h-10 flex items-center justify-center font-semibold transition
                                         {{ $selectedDate == \Carbon\Carbon::create($day['year'], $day['month'], $day['day'])->format('Y-m-d') ? 'bg-green-500 text-white border-2 border-black' : 'bg-gray-100 text-gray-700 hover:bg-green-100' }}
-                                        {{ $day['year'] == now()->year && $day['month'] == now()->month && $day['day'] < now()->day ? 'opacity-50 cursor-not-allowed bg-red-100 hover:bg-red-100' : '' }}">
+                                        {{ $day['year'] == now()->year && $day['month'] == now()->month && $day['day'] < now()->day ? 'opacity-50 cursor-not-allowed bg-white hover:bg-white font-normal' : '' }}">
                                     {{ $day['day'] }}
                                 </button>
                             @else
-                                <div class="w-100 h-10 flex items-center justify-center text-gray-400 bg-gray-50">
+                                <div
+                                    class="w-100 h-10 flex items-center justify-center text-gray-400 bg-gray-50 font-semibold">
                                     {{ $day['day'] }}</div>
                             @endif
                         @endforeach
                     @endforeach
+                </div> --}}
+
+                <div class="grid grid-cols-7 gap-2 items-center justify-center">
+                    @foreach ($calendarDays as $week)
+                        @foreach ($week as $day)
+                            @php
+                                $isPast =
+                                    $day['year'] == now()->year &&
+                                    $day['month'] == now()->month &&
+                                    $day['day'] < now()->day;
+                                $isSelected =
+                                    $selectedDate ==
+                                    \Carbon\Carbon::create($day['year'], $day['month'], $day['day'])->format('Y-m-d');
+                            @endphp
+
+                            @if (!$day['other'])
+                                <button
+                                    wire:click="selectDay({{ $day['year'] }}, {{ $day['month'] }}, {{ $day['day'] }})"
+                                    @disabled($isPast)
+                                    class="w-md h-10 flex items-center justify-center font-semibold transition
+                                        {{ $isSelected ? 'bg-green-500 text-white border-2 border-black' : 'bg-gray-100 text-gray-700 hover:bg-green-100' }}
+                                        {{ $isPast ? 'opacity-50 cursor-not-allowed bg-white hover:bg-white font-normal' : '' }}">
+                                    {{ $day['day'] }}
+                                </button>
+                            @else
+                                <button
+                                    wire:click="selectDay({{ $day['year'] }}, {{ $day['month'] }}, {{ $day['day'] }})"
+                                    class="w-100 h-10 flex items-center justify-center font-semibold transition
+        {{ $selectedDate == \Carbon\Carbon::create($day['year'], $day['month'], $day['day'])->format('Y-m-d') ? 'bg-green-500 text-white border-2 border-black' : 'bg-gray-50 text-gray-400 hover:bg-gray-100' }}">
+                                    {{ $day['day'] }}
+                                </button>
+                                {{-- <div
+                                    class="w-100 h-10 flex items-center justify-center text-gray-400 bg-gray-50 font-semibold">
+                                    {{ $day['day'] }}
+                                </div> --}}
+                            @endif
+                        @endforeach
+                    @endforeach
                 </div>
+
             </div>
         </div>
     @elseif($step == 2)
@@ -113,7 +153,7 @@
                         </div>
                         @foreach ($selectedType->rooms as $room)
                             <div wire:click="selectRoom({{ $room->id }})"
-                                class="mb-0 p-4 border rounded cursor-pointer shadow-sm hover:bg-green-50
+                                class="mb-2 p-4 border rounded cursor-pointer shadow-sm hover:bg-green-50
                                 {{ $selectedRoom && $selectedRoom->id === $room->id ? 'bg-green-100 border-green-500' : 'bg-white' }}">
                                 <p><strong>Room:</strong> {{ $room->name }}</p>
                             </div>
@@ -127,7 +167,8 @@
 
                     <div class="mb-4 mr-6">
 
-                        <img src="/images/rooms/room1.png" alt="Room A" class="w-100 mb-5 h-75 object-cover" />
+                        <img src="{{ asset('images/rooms/' . $selectedType->image) }}" alt="{{ $selectedType->name }}"
+                            class="w-100 mb-5 h-75 object-cover" />
                         <div class="flex gap-3">
                             <!-- Room -->
                             <div class="inline-flex items-center border rounded-lg overflow-hidden bg-gray-100">
@@ -287,8 +328,8 @@
             </div>
         @endif
 
-        <div class="grid grid-cols-2 gap-6">
-            <div>
+        <div class="flex gap-4 p-4 box-border">
+            <div class="w-2/5">
                 <h3 class="text-xl font-bold mb-4">Your Details</h3>
                 <div class="grid gap-4">
                     <!-- Name Field -->
@@ -324,8 +365,7 @@
                         <input type="text" wire:model="band_name" placeholder="Band Name (if any)"
                             class="w-full p-2 border rounded">
                         <input type="number" wire:model="members" placeholder="Members" min="1"
-                            max="{{ $selectedRoom->capacity }}"
-                            class="w-32 p-2 border rounded">{{--  can't > than capacity --}}
+                            class="w-32 p-2 border rounded">{{--  TODO: can't > than capacity --}}
                     </div>
 
                     <!-- Additional Requests -->
@@ -350,19 +390,22 @@
                     @endif
                 </div>
             </div>
-            <div>
-                {{-- <h3 class="text-xl font-bold mb-4">Booking Summary</h3> --}}
+            <div class="w-3/5">
                 <div class="grid grid-cols-2 gap-2 bg-gray-100 border p-4 rounded mb-4">
+                    @if ($selectedType)
+                        <div>
+                            <img class="w-full h-auto" src="{{ asset('images/rooms/' . $selectedType->image) }}"
+                                alt="{{ $selectedType->name }}">
+                        </div>
+                    @endif
                     <div>
-                        <img class="h-full" src="./images/rooms/room1.png" alt="">
-                    </div>
-                    <div>
-                        <h1 class="text-xl"><strong>{{ $selectedType->name ?? '-' }}</strong></h1>
-                        <h2>{{ $selectedRoom->name ?? '-' }}</h2>
-                        <p><strong class="fa-solid fa-user"></strong> {{ $selectedRoom->capacity ?? '-' }} people</p>
-                        <p><strong class="fa-solid fa-calendar"></strong>
+                        <h1 class="text-2xl text-bold"><strong>{{ $selectedType->name ?? '-' }}</strong></h1>
+                        <h2 class="text-xl text-semibold">{{ $selectedRoom->name ?? '-' }}</h2>
+                        <p class="text-lg"><strong class="fa-solid fa-user"></strong>
+                            {{ $selectedRoom->capacity ?? '-' }} people</p>
+                        <p class="text-lg"><strong class="fa-solid fa-calendar"></strong>
                             {{ $selectedDate ? \Carbon\Carbon::parse($selectedDate)->format('D j M, Y') : '-' }}</p>
-                        <p><strong class="fa-solid fa-clock"></strong> {{ $start_time ?? '-' }} -
+                        <p class="text-lg"><strong class="fa-solid fa-clock"></strong> {{ $start_time ?? '-' }} -
                             {{ $end_time ?? '-' }}
                             :
                             {{ $start_time && $end_time ? (strtotime($end_time) - strtotime($start_time)) / 3600 . ' hour(s)' : '-' }}

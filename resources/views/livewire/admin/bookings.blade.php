@@ -56,7 +56,8 @@
             </thead>
             <tbody class="divide-y divide-gray-200 text-sm">
                 @forelse($recentBookings ?? [] as $booking)
-                    <tr class="hover:bg-gray-50 transition-colors" wire:click.stop="showDetails({{ $booking->id }})">
+                    <tr class="hover:bg-gray-50 transition-colors cursor-pointer"
+                        wire:click.stop="showDetails({{ $booking->id }})">
                         <td class="px-4 py-3 font-medium text-gray-900">{{ $booking->user->name ?? '-' }}</td>
                         <td class="px-4 py-3 text-gray-600">{{ $booking->room->name ?? '-' }}</td>
                         <td class="px-4 py-3">{{ $booking->date }}</td>
