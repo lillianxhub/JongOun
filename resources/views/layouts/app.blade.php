@@ -10,7 +10,7 @@
 </head>
 
 <body class="font-sans antialiased bg-gray-100">
-    <!-- SweetAlert2 CSS & JS -->
+        <!-- SweetAlert2 CSS & JS -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -62,6 +62,8 @@
             @auth
                 @if (auth()->user()->role === 'admin')
                     <a href="{{ route('dashboard') }}" class="mr-4 hover:text-blue-600 transition-colors">Dashboard</a>
+                    <a href="{{ route('profile.bookings') }}" class="mr-4 hover:text-blue-600 transition-colors">My
+                        Booking</a>
                     <a href="{{ route('profile.show') }}" class="mr-4 hover:text-blue-600 transition-colors">Profile</a>
                     <form method="POST" action="{{ route('logout') }}" class="inline">
                         @csrf
