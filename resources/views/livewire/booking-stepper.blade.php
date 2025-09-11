@@ -333,13 +333,13 @@
                         placeholder="Additional Requests"></textarea>
 
                     <!-- Submit Button -->
-                    <button wire:click="submitBooking" @disabled(!$name || !$email || !$phone) @class([
+                    <button wire:click="confirmBooking" @disabled(!$name || !$email || !$phone) @class([
                         'px-4 py-2 rounded text-white transition-colors duration-200',
                         'bg-green-600 hover:bg-green-700 cursor-pointer' => $this->isFormValid,
                         'bg-green-300 cursor-not-allowed' => !$this->isFormValid,
                     ])>
-                        <span wire:loading.remove wire:target="submitBooking">Reserve booking</span>
-                        <span wire:loading wire:target="submitBooking">Processing...</span>
+                        <span wire:loading.remove wire:target="confirmBooking">Reserve booking</span>
+                        <span wire:loading wire:target="confirmBooking">Processing...</span>
                     </button>
 
                     <!-- Form validation status indicator -->
@@ -369,28 +369,69 @@
                         </p>
                     </div>
                 </div>
-                <h3 class="text-xl font-bold mb-4">Price details</h3>
-                {{-- Add instruments --}}
-                <div class="border p-4 mb-4">
-                    <div class="flex items-between mb-4">
-                        <button class="bg-green-500 px-4 py-2 rounded-lg">Add</button>
-                        <p>Cables</p>
-                    </div>
-                    <div class="flex items-between mb-4">
-                        <button class="bg-green-500 px-4 py-2 rounded-lg">Add</button>
-                        <p>Cables</p>
+                <h3 class="text-xl font-bold">Price details</h3>
+                {{-- Instrument list --}}
+                <div class="mb-6">
+                    <div class="space-y-2">
+                        @foreach ($instruments as $instrument)
+                            @if (!isset($selectedInstruments[$instrument->id]))
+                                <div class="flex justify-between items-center border rounded p-2">
+                                    <div class="flex items-center gap-2">
+                                        <button wire:click="addInstrument({{ $instrument->id }})"
+                                            class="bg-green-500 hover:bg-green-300 text-white px-3 py-1 rounded">
+                                            +
+                                        </button>
+                                        <span>{{ $instrument->name }}</span>
+                                    </div>
+                                    <span class="text-gray-600">
+                                        {{ $instrument->price > 0 ? '฿' . number_format($instrument->price, 2) : 'Free' }}
+                                    </span>
+                                </div>
+                            @endif
+                        @endforeach
                     </div>
                 </div>
+
+                {{-- Selected Instruments --}}
+                @if ($selectedInstruments)
+                    <div class="mb-6">
+                        <div class="space-y-3">
+                            @foreach ($selectedInstruments as $id => $quantity)
+                                @php $instrument = $instruments->firstWhere('id', $id); @endphp
+                                <div class="p-2 border rounded bg-gray-50">
+                                    <div class="flex justify-between items-center gap-2">
+                                        <div class="flex items-center gap-2">
+                                            <button wire:click="removeInstrument({{ $id }})"
+                                                class="bg-red-500 hover:bg-red-300 text-white px-3 py-1 rounded">&times;</button>
+                                            <span>{{ $instrument->name }}</span>
+                                            <span
+                                                class="ml-2 text-gray-500">{{ $instrument->price > 0 ? '฿' . number_format($instrument->price * $quantity, 2) : 'Free' }}
+                                            </span>
+                                        </div>
+                                        <div class="flex items-center gap-2">
+                                            <button wire:click="decreaseInstrument({{ $id }})"
+                                                class="px-2 border">-</button>
+                                            <span>{{ $quantity }}</span>
+                                            <button wire:click="increaseInstrument({{ $id }})"
+                                                class="px-2 border">+</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                @endif
+
                 <div class="border p-4">
                     <p><strong>Price per hour:</strong>
                         ฿ {{ $selectedRoom->price ? number_format($selectedRoom->price, 2) : '-' }}
                     </p>
-                    <p>
+                    <p class="text-sm text-gray-500">
                         Time in {{ $selectedRoom->name }} :
                         {{ $start_time && $end_time ? (strtotime($end_time) - strtotime($start_time)) / 3600 . ' hour(s)' : '-' }}
                     </p>
-                    <p class="text-lg"><strong>Total Price:</strong>
-                        {{ $total_price ? number_format($total_price, 2) . ' ฿' : '-' }}
+                    <p class="text-lg"><strong>Total Price:</strong> ฿
+                        {{ $total_price ? number_format($total_price, 2) : '-' }}
                     </p>
                 </div>
             </div>

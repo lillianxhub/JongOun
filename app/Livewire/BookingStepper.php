@@ -3,8 +3,10 @@
 namespace App\Livewire;
 
 use Livewire\Component;
+use Livewire\Attributes\On;
 use App\Models\Room;
 use App\Models\Booking;
+use App\Models\Instrument;
 use App\Models\RoomType;
 use Carbon\Carbon;
 
@@ -35,6 +37,9 @@ class BookingStepper extends Component
     public $members;
     public $additional_request;
 
+    public $instruments;
+    public $selectedInstruments = [];
+
     public $total_price = 0;
 
     public $currentMonth;
@@ -57,6 +62,8 @@ class BookingStepper extends Component
             // Assuming phone is a field in users table
             $this->phone = auth()->user()->phone ?? '';
         }
+
+        $this->instruments = Instrument::all();
     }
 
     public function generateCalendar()
@@ -143,7 +150,8 @@ class BookingStepper extends Component
 
     public function nextStep()
     {
-        if ($this->step == 2) $this->calculatePrice();
+        if ($this->step == 2)
+            $this->calculatePrice();
         $this->step++;
     }
 
@@ -159,12 +167,50 @@ class BookingStepper extends Component
         }
     }
 
+
+    public function addInstrument($id)
+    {
+        $this->selectedInstruments[$id] = 1;
+        $this->calculatePrice();
+    }
+
+    public function removeInstrument($id)
+    {
+        unset($this->selectedInstruments[$id]);
+        $this->calculatePrice();
+    }
+
+    public function increaseInstrument($id)
+    {
+        $this->selectedInstruments[$id]++;
+        $this->calculatePrice();
+    }
+
+    public function decreaseInstrument($id)
+    {
+        if ($this->selectedInstruments[$id] > 1) {
+            $this->selectedInstruments[$id]--;
+        } else {
+            unset($this->selectedInstruments[$id]);
+        }
+        $this->calculatePrice();
+    }
+
     public function calculatePrice()
     {
         if ($this->room_id && $this->start_time && $this->end_time) {
             $room = Room::find($this->room_id);
             $hours = (strtotime($this->end_time) - strtotime($this->start_time)) / 3600;
+
             $this->total_price = $room->price * max($hours, 1);
+        }
+
+        foreach ($this->selectedInstruments as $id => $quantity) {
+            $instrument = $this->instruments->firstWhere('id', $id);
+
+            if ($instrument) {
+                $this->total_price += max(0, $instrument->price) * $quantity;
+            }
         }
     }
 
@@ -360,6 +406,31 @@ class BookingStepper extends Component
             !$this->getErrorBag()->has('phone');
     }
 
+    public function confirmBooking()
+    {
+        $this->validate([
+            'date' => 'required|date',
+            'room_id' => 'required|exists:rooms,id',
+            'start_time' => 'required',
+            'end_time' => 'required|after:start_time',
+            'name' => 'required|min:2',
+            'email' => 'required|email',
+            'phone' => ['required', 'regex:/^(\+66|0)[0-9]{8,9}$/'],
+        ]);
+
+        $this->dispatch(
+            'swal:confirm',
+            [
+                'title' => 'Are you sure?',
+                'text' => 'You want to reserve this booking?',
+                'icon' => 'warning',
+                'method' => 'submitBooking',
+                'color' => 'green'
+            ]
+        );
+    }
+
+    #[On('submitBooking')]
     public function submitBooking()
     {
         $this->validate([
@@ -372,6 +443,14 @@ class BookingStepper extends Component
             'phone' => ['required', 'regex:/^(\+66|0)[0-9]{8,9}$/'],
         ]);
 
+        foreach ($this->selectedInstruments as $id => $quantity) {
+            $instrument = Instrument::find($id);
+            if ($instrument->stock < $quantity) {
+                session()->flash('error', "Not enough stock for {$instrument->name}");
+                return;
+            }
+        }
+
         // Final validation before creating booking
         if (!$this->isTimeSlotAvailable($this->start_time, $this->end_time, $this->room_id, $this->date)) {
             $this->addError('booking', 'The selected time slot is no longer available. Please go back and select different times.');
@@ -379,7 +458,7 @@ class BookingStepper extends Component
         }
 
         try {
-            Booking::create([
+            $booking = Booking::create([
                 'user_id' => auth()->id(),
                 'room_id' => $this->room_id,
                 'date' => $this->date,
@@ -395,10 +474,35 @@ class BookingStepper extends Component
                 'status' => 'pending',
             ]);
 
+            // attach Instruments
+            foreach ($this->selectedInstruments as $id => $quantity) {
+                $instrument = Instrument::find($id);
+                $booking->instruments()->attach($id, [
+                    'quantity' => $quantity,
+                    'price' => $instrument->price * $quantity
+                ]);
+
+                // update stock
+                $instrument->decrement('stock', $quantity);
+            }
+
             session()->flash('message', 'Booking successful!');
-            return redirect()->route('home');
+            $this->dispatch('swal:success', [
+                'title' => 'Reserved!',
+                'text' => 'Booking has been reserve successfully.',
+                'icon' => 'success',
+                'color' => 'green',
+                'redirect' => route('profile.bookings'),
+            ]);
+
+            // return redirect()->route('profile.bookings');
         } catch (\Exception $e) {
-            $this->addError('booking', 'An error occurred while creating your booking. Please try again.');
+            $this->dispatch('swal:error', [
+                'title' => 'Error!',
+                'text' => 'Failed to reserve this booking. Please try again.',
+                'icon' => 'error'
+
+            ]);
         }
     }
 

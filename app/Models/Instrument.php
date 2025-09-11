@@ -11,7 +11,7 @@ class Instrument extends Model
 
     public function bookings()
     {
-        return $this->belongsTomany(Booking::class, 'booking_instument')
+        return $this->belongsTomany(Booking::class, 'booking_instrument')
             ->withPivot('quantity')
             ->withTimestamps();
     }

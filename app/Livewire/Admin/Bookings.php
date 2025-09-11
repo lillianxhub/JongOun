@@ -1,13 +1,14 @@
 <?php
 
-namespace App\Livewire;
+namespace App\Livewire\Admin;
 
 use Livewire\Component;
+use Livewire\Attributes\On;
 use App\Models\Booking;
 use App\Models\User;
 use App\Models\Room;
 
-class AdminBookings extends Component
+class Bookings extends Component
 {
     public $totalBookings;
     public $totalUsers;
@@ -31,6 +32,7 @@ class AdminBookings extends Component
         $this->totalRooms = Room::count();
         $this->recentBookings = Booking::with('user', 'room')
             ->orderBy('created_at', 'desc')
+            ->take(10)
             ->get();
     }
 
@@ -58,6 +60,20 @@ class AdminBookings extends Component
         ]);
     }
 
+    #[On('approve')]
+    public function approve($id)
+    {
+        $booking = Booking::findOrFail($id);
+        $booking->update(['status' => 'approved']);
+        $this->loadStats();
+
+        $this->dispatch('swal:success', [
+            'title' => 'Approved!',
+            'text' => 'Booking approved successfully',
+            'icon' => 'success',
+        ]);
+    }
+
     public function confirmCancel($id)
     {
         $this->dispatch('swal:confirm', [
@@ -70,20 +86,7 @@ class AdminBookings extends Component
         ]);
     }
 
-    public function approve($id)
-    {
-        $booking = Booking::findOrFail($id);
-        $booking->update(['status' => 'approved']);
-        $this->loadStats();
-
-        $this->dispatch('swal:success', [
-            'title' => 'Approved!',
-            'text' => 'Booking approved successfully',
-            'icon' => 'success',
-            'color' => 'green'
-        ]);
-    }
-
+    #[On('cancel')]
     public function cancel($id)
     {
         $booking = Booking::findOrFail($id);
@@ -100,6 +103,6 @@ class AdminBookings extends Component
 
     public function render()
     {
-        return view('livewire.admin-bookings');
+        return view('livewire.admin.bookings');
     }
 }
