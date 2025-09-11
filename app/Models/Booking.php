@@ -38,7 +38,7 @@ class Booking extends Model
 
     public function instruments()
     {
-        return $this->belongsToMany(Instrument::class, 'booking_intrument')
+        return $this->belongsToMany(Instrument::class, 'booking_instrument')
             ->withPivot('quantity', 'price')
             ->withTimestamps();
     }

@@ -49,15 +49,14 @@
                     <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
                     <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status
                     </th>
-                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Details
-                    </th>
+                    {{-- <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Details</th> --}}
                     <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action
                     </th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-200 text-sm">
                 @forelse($recentBookings ?? [] as $booking)
-                    <tr class="hover:bg-gray-50 transition-colors">
+                    <tr class="hover:bg-gray-50 transition-colors" wire:click.stop="showDetails({{ $booking->id }})">
                         <td class="px-4 py-3 font-medium text-gray-900">{{ $booking->user->name ?? '-' }}</td>
                         <td class="px-4 py-3 text-gray-600">{{ $booking->room->name ?? '-' }}</td>
                         <td class="px-4 py-3">{{ $booking->date }}</td>
@@ -79,20 +78,20 @@
                                 {{ ucfirst($booking->status) }}
                             </span>
                         </td>
-                        <td class="px-4 py-3">
+                        {{-- <td class="px-4 py-3">
                             <button wire:click="showDetails({{ $booking->id }})"
                                 class="px-3 py-1 text-sm font-medium text-white bg-gray-800 rounded hover:bg-gray-900 transition">
                                 Details
                             </button>
-                        </td>
+                        </td> --}}
                         <td class="px-4 py-3">
                             @if ($booking->status === 'pending')
                                 <div class="flex space-x-2">
-                                    <button wire:click="confirmApprove({{ $booking->id }})"
+                                    <button wire:click.stop="confirmApprove({{ $booking->id }})"
                                         class="text-green-600 hover:text-green-800 transition p-1 rounded-full hover:bg-green-100">
                                         <i class="fa-solid fa-square-check"></i>
                                     </button>
-                                    <button wire:click="confirmCancel({{ $booking->id }})"
+                                    <button wire:click.stop="confirmCancel({{ $booking->id }})"
                                         class="text-red-600 hover:text-red-800 transition p-1 rounded-full hover:bg-red-100">
                                         <i class="fa-solid fa-square-xmark"></i>
                                     </button>

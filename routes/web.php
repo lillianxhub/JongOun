@@ -4,6 +4,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Models\Booking;
 use App\Http\Controllers\AdminController;
+use App\Livewire\Admin\Bookings;
 
 /*
 |--------------------------------------------------------------------------
@@ -42,3 +43,15 @@ Route::middleware([
         return view('profile.show');
     })->name('profile.show');
 });
+// routes/web.php
+// Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(function () {
+//     Route::get('/dashboard', function () {
+//         return view('admin.dashboard');
+//     })->name('dashboard');
+
+//     Route::get('/bookings', [Bookings::class])->name('bookings');
+    // Route::get('/users', [AdminUserController::class, 'index'])->name('users');
+    // Route::get('/rooms', [AdminRoomController::class, 'index'])->name('rooms');
+    // Route::get('/reports', [AdminReportController::class, 'index'])->name('reports');
+    // Route::get('/settings', [AdminSettingController::class, 'index'])->name('settings');
+// });

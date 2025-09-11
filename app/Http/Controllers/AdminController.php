@@ -29,20 +29,4 @@ class AdminController extends Controller
             'recentBookings'
         ));
     }
-
-    public function approve($id)
-    {
-        $booking = Booking::findOrFail($id);
-        $booking->update(['status' => 'approved']);
-
-        return redirect()->back()->with('success', 'booking approved successfully');
-    }
-
-    public function cancel($id)
-    {
-        $booking = Booking::findOrFail($id);
-        $booking->update(['status' => 'canceled']);
-
-        return redirect()->back()->with('success', 'booking canceled successfully');
-    }
 }

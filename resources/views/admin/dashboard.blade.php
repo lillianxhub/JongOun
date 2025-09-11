@@ -15,23 +15,11 @@
     </script>
 
     <div class="container mx-auto py-10">
-        <h1 class="text-3xl font-bold mb-8">Admin Dashboard</h1>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div class="bg-white shadow rounded-lg p-6">
-                <h2 class="text-xl font-semibold mb-2">Total Users</h2>
-                <div class="text-3xl font-bold">{{ $totalUsers ?? '-' }}</div>
-            </div>
-            <div class="bg-white shadow rounded-lg p-6">
-                <h2 class="text-xl font-semibold mb-2">Total Bookings</h2>
-                <div class="text-3xl font-bold">{{ $totalBookings ?? '-' }}</div>
-            </div>
-            <div class="bg-white shadow rounded-lg p-6">
-                <h2 class="text-xl font-semibold mb-2">Pending Bookings</h2>
-                <div class="text-3xl font-bold">{{ $pendingBookings ?? '-' }}</div>
-            </div>
+        <div class="container">
+            @livewire('admin.dashboard')
         </div>
         <div class="mt-10">
-            @livewire('admin-bookings')
+            @livewire('admin.bookings')
         </div>
 
         <div class="mt-10">
