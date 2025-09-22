@@ -237,6 +237,22 @@ class BookingStepper extends Component
         $this->end_time = null;
     }
 
+    public function isRoomAvailable(Room $room)
+    {
+        if (!$this->selectedDate) return true;
+
+        $availableTimes = $room->available_times ? json_decode($room->available_times, true) : [];
+
+        foreach ($availableTimes as $startTime) {
+            if ($this->hasAvailableEndTime($startTime)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+
     /**
      * Check if a time slot is available for booking
      */

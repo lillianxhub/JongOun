@@ -9,11 +9,13 @@
         </div>
 
         <!-- Loading Indicator -->
-        {{-- <div wire:loading wire:target="refreshData" class="fixed top-5 right-5 z-50">
+        <div wire:loading wire:target="refreshData" class="fixed top-5 right-5 z-50">
             <div class="bg-blue-500 text-white px-4 py-2 rounded-lg shadow-lg">
                 <i class="fas fa-spinner fa-spin"></i> Updating...
             </div>
-        </div> --}}
+        </div>
+
+        {{-- testtest --}}
 
         <!-- Stats Cards -->
         <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
