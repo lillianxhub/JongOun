@@ -3,6 +3,7 @@
 namespace App\Livewire\Admin;
 
 use Livewire\Component;
+use Livewire\WithPagination;
 use Livewire\Attributes\On;
 use App\Models\Booking;
 use App\Models\User;
@@ -10,14 +11,22 @@ use App\Models\Room;
 
 class Bookings extends Component
 {
+    use WithPagination;
+
+    public $perPage = 10;
+    public $search = '';
+    public $statusFilter = '';
+    public $dateRange = '';
+
     public $totalBookings;
     public $totalUsers;
     public $pendingBookings;
     public $totalRooms;
-    public $recentBookings;
 
     public $showModal = false;
     public $selectedBooking;
+
+    protected $paginationTheme = 'tailwind';
 
     public function mount()
     {
@@ -30,10 +39,42 @@ class Bookings extends Component
         $this->totalUsers = User::count();
         $this->pendingBookings = Booking::where('status', 'pending')->count();
         $this->totalRooms = Room::count();
-        $this->recentBookings = Booking::with('user', 'room')
-            ->orderByRaw("CASE WHEN status = 'pending' THEN 1 ELSE 2 END")
-            ->orderBy('created_at', 'desc')
-            ->get();
+    }
+
+    public function updating($field, $value)
+    {
+        if (in_array($field, ['search', 'statusFilter', 'dateRange', 'perPage'])) {
+            $this->resetPage();
+        }
+    }
+
+
+    public function updatingSearch()
+    {
+        $this->resetPage();
+    }
+
+    public function updatingStatusFilter()
+    {
+        $this->resetPage();
+    }
+
+    public function updatingPerPage()
+    {
+        $this->resetPage();
+    }
+
+    public function updatingDateRange()
+    {
+        $this->resetPage();
+    }
+
+    public function resetFilters()
+    {
+        $this->search = '';
+        $this->statusFilter = '';
+        $this->dateRange = '';
+        $this->resetPage();
     }
 
     public function showDetails($id)
@@ -101,8 +142,35 @@ class Bookings extends Component
         ]);
     }
 
+    public function getBookingsProperty()
+    {
+        return Booking::with(['user', 'room'])
+            ->when($this->search, function ($query) {
+                $query->where(function ($q) {
+                    $q->whereHas('user', function ($userQuery) {
+                        $userQuery->where('name', 'like', '%' . $this->search . '%')
+                            ->orWhere('email', 'like', '%' . $this->search . '%');
+                    })
+                        ->orWhereHas('room', function ($roomQuery) {
+                            $roomQuery->where('name', 'like', '%' . $this->search . '%');
+                        })
+                        ->orWhere('band_name', 'like', '%' . $this->search . '%');
+                });
+            })
+            ->when($this->statusFilter, function ($query) {
+                $query->where('status', $this->statusFilter);
+            })
+            ->when($this->dateRange, function ($query) {
+                $query->whereDate('date', $this->dateRange);
+            })
+            ->orderBy('created_at', 'desc')
+            ->paginate($this->perPage);
+    }
+
     public function render()
     {
-        return view('livewire.admin.bookings');
+        return view('livewire.admin.bookings', [
+            'recentBookings' => $this->bookings,
+        ]);
     }
 }
