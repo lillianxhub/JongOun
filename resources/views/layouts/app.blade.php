@@ -70,7 +70,7 @@
                         <button type="submit" class="text-red-500">Logout</button>
                     </form> --}}
                     <div class="flex items-center space-x-4">
-                        <a href="{{ route('dashboard') }}" class="hover:text-blue-600 transition-colors">Dashboard</a>
+                        <a href="{{ route('admin.dashboard') }}" class="hover:text-blue-600 transition-colors">Dashboard</a>
                         <a href="{{ route('home') }}#service" class="hover:text-blue-500 transition-colors">Service</a>
                         <a href="{{ route('booking') }}" class="hover:text-blue-500 transition-colors">Booking</a>
                         <a href="{{ route('home') }}#about" class="hover:text-blue-600 transition-colors">About</a>
@@ -93,7 +93,7 @@
                                 class="absolute right-0 mt-10 w-48 bg-white border rounded-lg shadow-lg py-2 z-50">
                                 <a href="{{ route('profile.bookings') }}"
                                     class="block px-4 py-2 text-gray-700 hover:bg-gray-100">My Booking</a>
-                                <a href="{{ route('profile.show') }}"
+                                <a href="{{ route('user.profile') }}"
                                     class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Profile</a>
                                 <form method="POST" action="{{ route('logout') }}">
                                     @csrf
@@ -127,7 +127,7 @@
                                 class="absolute right-0 mt-10 w-48 bg-white border rounded-lg shadow-lg py-2 z-50">
                                 <a href="{{ route('profile.bookings') }}"
                                     class="block px-4 py-2 text-gray-700 hover:bg-gray-100">My Booking</a>
-                                <a href="{{ route('profile.show') }}"
+                                <a href="{{ route('user.profile') }}"
                                     class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Profile</a>
                                 <form method="POST" action="{{ route('logout') }}">
                                     @csrf

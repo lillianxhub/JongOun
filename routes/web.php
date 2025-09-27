@@ -38,7 +38,7 @@ Route::middleware([
 
     Route::get('/profile', function () {
         return view('profile.show');
-    })->name('profile.show');
+    })->name('user.profile');
 
     // Admin routes (only accessible to admin users)
     Route::middleware('admin')->prefix('admin')->name('admin.')->group(function () {
@@ -49,13 +49,4 @@ Route::middleware([
         // Route::get('/rooms', [AdminController::class, 'rooms'])->name('rooms');
         // Route::get('/users', [AdminController::class, 'users'])->name('users');
     });
-
-    // Backwards compatibility route (redirects old dashboard route to admin dashboard)
-    Route::get('/dashboard', function () {
-        if (auth()->user()->role === 'admin') {
-            return redirect()->route('admin.dashboard');
-        }
-        // For regular users, you might want to redirect to a user dashboard or profile
-        return redirect()->route('profile.bookings');
-    })->name('dashboard');
 });
