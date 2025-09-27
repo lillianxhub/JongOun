@@ -1,6 +1,5 @@
 <?php
 
-
 use Illuminate\Support\Facades\Route;
 use App\Models\Booking;
 use App\Http\Controllers\AdminController;
@@ -18,10 +17,7 @@ use App\Http\Controllers\IndexController;
 |
 */
 
-// Route::get('/', function () {
-//     return view('index');
-// })->name('home');
-
+// Public routes
 Route::get('/', [IndexController::class, 'index'])->name('home');
 
 Route::middleware([
@@ -29,13 +25,11 @@ Route::middleware([
     config('jetstream.auth_session'),
     'verified',
 ])->group(function () {
+
+    // User routes (accessible to all authenticated users)
     Route::get('/booking', function () {
         return view('booking');
     })->name('booking');
-
-    Route::get('/dashboard', [AdminController::class, 'dashboard'])
-        ->middleware('admin')
-        ->name('dashboard');
 
     Route::get('/profile/bookings', function () {
         $bookings = Booking::with('room')->where('user_id', auth()->id())->latest()->get();
@@ -45,16 +39,23 @@ Route::middleware([
     Route::get('/profile', function () {
         return view('profile.show');
     })->name('profile.show');
-});
-// routes/web.php
-// Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(function () {
-//     Route::get('/dashboard', function () {
-//         return view('admin.dashboard');
-//     })->name('dashboard');
 
-//     Route::get('/bookings', [Bookings::class])->name('bookings');
-    // Route::get('/users', [AdminUserController::class, 'index'])->name('users');
-    // Route::get('/rooms', [AdminRoomController::class, 'index'])->name('rooms');
-    // Route::get('/reports', [AdminReportController::class, 'index'])->name('reports');
-    // Route::get('/settings', [AdminSettingController::class, 'index'])->name('settings');
-// });
+    // Admin routes (only accessible to admin users)
+    Route::middleware('admin')->prefix('admin')->name('admin.')->group(function () {
+        Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
+
+        // You can add more admin routes here:
+        Route::get('/bookings', [AdminController::class, 'bookings'])->name('bookings');
+        // Route::get('/rooms', [AdminController::class, 'rooms'])->name('rooms');
+        // Route::get('/users', [AdminController::class, 'users'])->name('users');
+    });
+
+    // Backwards compatibility route (redirects old dashboard route to admin dashboard)
+    Route::get('/dashboard', function () {
+        if (auth()->user()->role === 'admin') {
+            return redirect()->route('admin.dashboard');
+        }
+        // For regular users, you might want to redirect to a user dashboard or profile
+        return redirect()->route('profile.bookings');
+    })->name('dashboard');
+});

@@ -29,4 +29,17 @@ class AdminController extends Controller
             'recentBookings'
         ));
     }
+    public function bookings()
+    {
+        $totalBookings = Booking::count();
+        $totalUsers = User::count();
+        $totalRooms = Room::count();
+
+        $bookings = Booking::with('user', 'room')->orderBy('created_at', 'desc')->get();
+        return view('admin.bookings', compact(
+            'totalBookings',
+            'totalRooms',
+            'bookings'
+        ));
+    }
 }

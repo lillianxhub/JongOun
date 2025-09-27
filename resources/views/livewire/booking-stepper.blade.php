@@ -45,26 +45,6 @@
                     <div>Sat</div>
                     <div>Sun</div>
                 </div>
-                {{-- <div class="grid grid-cols-7 gap-2 items-center justify-center">
-                    @foreach ($calendarDays as $week)
-                        @foreach ($week as $day)
-                            @if (!$day['other'])
-                                <button
-                                    wire:click="selectDay({{ $day['year'] }}, {{ $day['month'] }}, {{ $day['day'] }})"
-                                    class="w-md h-10 flex items-center justify-center font-semibold transition
-                                        {{ $selectedDate == \Carbon\Carbon::create($day['year'], $day['month'], $day['day'])->format('Y-m-d') ? 'bg-green-500 text-white border-2 border-black' : 'bg-gray-100 text-gray-700 hover:bg-green-100' }}
-                                        {{ $day['year'] == now()->year && $day['month'] == now()->month && $day['day'] < now()->day ? 'opacity-50 cursor-not-allowed bg-white hover:bg-white font-normal' : '' }}">
-                                    {{ $day['day'] }}
-                                </button>
-                            @else
-                                <div
-                                    class="w-100 h-10 flex items-center justify-center text-gray-400 bg-gray-50 font-semibold">
-                                    {{ $day['day'] }}</div>
-                            @endif
-                        @endforeach
-                    @endforeach
-                </div> --}}
-
                 <div class="grid grid-cols-7 gap-2 items-center justify-center">
                     @foreach ($calendarDays as $week)
                         @foreach ($week as $day)
@@ -84,7 +64,7 @@
                                     @disabled($isPast)
                                     class="w-md h-10 flex items-center justify-center font-semibold transition
                                         {{ $isSelected ? 'bg-green-500 text-white border-2 border-black' : 'bg-gray-100 text-gray-700 hover:bg-green-100' }}
-                                        {{ $isPast ? 'opacity-50 cursor-not-allowed bg-white hover:bg-white font-normal' : '' }}">
+                                        {{ $isPast ? 'opacity-50 bg-white hover:bg-white font-normal' : '' }}">
                                     {{ $day['day'] }}
                                 </button>
                             @else
@@ -94,10 +74,6 @@
         {{ $selectedDate == \Carbon\Carbon::create($day['year'], $day['month'], $day['day'])->format('Y-m-d') ? 'bg-green-500 text-white border-2 border-black' : 'bg-gray-50 text-gray-400 hover:bg-gray-100' }}">
                                     {{ $day['day'] }}
                                 </button>
-                                {{-- <div
-                                    class="w-100 h-10 flex items-center justify-center text-gray-400 bg-gray-50 font-semibold">
-                                    {{ $day['day'] }}
-                                </div> --}}
                             @endif
                         @endforeach
                     @endforeach
@@ -105,6 +81,7 @@
 
             </div>
         </div>
+        {{-- Step 2 --}}
     @elseif($step == 2)
         <h3 class="text-xl font-bold mb-4">Choose Room & Time</h3>
 
@@ -117,18 +94,8 @@
             </div>
         @endif
 
-        {{-- เลือกประเภทห้อง --}}
+        {{-- select room type --}}
         <div class="grid grid-cols-[40%_60%] gap-6">
-            {{-- <div class="grid grid-rows-3 gap-4 mb-6">
-                @foreach ($room_types as $type)
-                    <button wire:click="selectRoomType({{ $type->id }})"
-                        class="cursor-pointer border rounded-lg p-4 text-center shadow-sm hover:bg-green-50
-                            {{ $selectedType && $selectedType->id === $type->id ? 'bg-green-100 border-green-500' : 'bg-white' }}">
-                        <p class="capitalize font-semibold">{{ $type->name }}</p>
-                    </button>
-                @endforeach
-            </div> --}}
-
             <div class="mb-4">
                 <div class="mb-5">
                     <label for="roomType" class="block mb-2 font-semibold">Select Room Type:</label>
@@ -145,7 +112,7 @@
                     </select>
                 </div>
 
-                {{-- แสดงห้องตามประเภทที่เลือก --}}
+                {{-- Show room --}}
                 @if ($selectedType)
                     <div>
                         <div class="mb-2">
@@ -157,7 +124,7 @@
                                 {{ $selectedRoom && $selectedRoom->id === $room->id ? 'bg-green-100 border-green-500' : 'bg-white' }}">
                                 <p><strong>Room:</strong> {{ $room->name }}</p>
                             </div>
-                        @endforeach
+                        @endforeach {{-- TODO: validate room --}}
                     </div>
                 @endif
             </div>
