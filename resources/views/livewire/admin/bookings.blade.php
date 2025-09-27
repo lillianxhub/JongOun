@@ -37,7 +37,7 @@
         });
     </script>
 
-    <h2 class="text-2xl font-bold mb-4 text-gray-900">Recent Bookings</h2>
+    <h2 class="text-2xl font-bold mb-4 text-gray-900">Total Bookings</h2>
     <div class="bg-white shadow rounded-lg p-6">
         <table class="min-w-full divide-y divide-gray-200">
             <thead>
@@ -49,7 +49,6 @@
                     <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
                     <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status
                     </th>
-                    {{-- <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Details</th> --}}
                     <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action
                     </th>
                 </tr>
@@ -79,12 +78,6 @@
                                 {{ ucfirst($booking->status) }}
                             </span>
                         </td>
-                        {{-- <td class="px-4 py-3">
-                            <button wire:click="showDetails({{ $booking->id }})"
-                                class="px-3 py-1 text-sm font-medium text-white bg-gray-800 rounded hover:bg-gray-900 transition">
-                                Details
-                            </button>
-                        </td> --}}
                         <td class="px-4 py-3">
                             @if ($booking->status === 'pending')
                                 <div class="flex space-x-2">
