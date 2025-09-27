@@ -33,7 +33,6 @@ class Bookings extends Component
         $this->recentBookings = Booking::with('user', 'room')
             ->orderByRaw("CASE WHEN status = 'pending' THEN 1 ELSE 2 END")
             ->orderBy('created_at', 'desc')
-            ->take(10)
             ->get();
     }
 
