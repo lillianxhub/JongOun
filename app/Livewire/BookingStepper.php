@@ -14,6 +14,36 @@ class BookingStepper extends Component
 {
     public $step = 1;
 
+    protected $rules = [
+        'name' => 'required|string|min:2|max:255',
+        'email' => 'required|email',
+        'phone' => 'required|regex:/^([0-9\s\-\+\(\)]*)$/|min:10',
+        'band_name' => 'nullable|string|max:255',
+        'members' => 'required|integer|min:1',
+        'selectedRoom' => 'required',
+        'start_time' => 'required',
+        'end_time' => 'required|after:start_time',
+        'selectedDate' => 'required|date|after_or_equal:today',
+        'additional_request' => 'nullable|string|max:1000'
+    ];
+
+    protected $messages = [
+        'name.required' => 'Please enter your name',
+        'name.min' => 'Name must be at least 2 characters',
+        'email.required' => 'Please enter your email',
+        'email.email' => 'Please enter a valid email address',
+        'phone.required' => 'Please enter your phone number',
+        'phone.regex' => 'Please enter a valid phone number',
+        'phone.min' => 'Phone number must be at least 10 digits',
+        'members.required' => 'Please enter the number of members',
+        'members.min' => 'Number of members must be at least 1',
+        'start_time.required' => 'Please select a start time',
+        'end_time.required' => 'Please select an end time',
+        'end_time.after' => 'End time must be after start time',
+        'selectedDate.required' => 'Please select a date',
+        'selectedDate.after_or_equal' => 'Please select today or a future date'
+    ];
+
     // Step 1
     public $date;
 
@@ -150,14 +180,87 @@ class BookingStepper extends Component
 
     public function nextStep()
     {
-        if ($this->step == 2)
+        // Validate each step before proceeding
+        if ($this->step == 1 && !$this->validateStep1()) {
+            return;
+        }
+        if ($this->step == 2 && !$this->validateStep2()) {
+            return;
+        }
+
+        if ($this->step == 2) {
             $this->calculatePrice();
+        }
         $this->step++;
     }
 
     public function prevStep()
     {
         $this->step--;
+    }
+
+    // ตรวจสอบจำนวนสมาชิกแบบ real-time
+    public function updatedMembers($value)
+    {
+        if ($this->selectedRoom && $value > $this->selectedRoom->capacity) {
+            $this->addError('members', "Number of members ({$value}) exceeds room capacity ({$this->selectedRoom->capacity})");
+
+            // แสดง SweetAlert2
+            $this->dispatch('swal:error', [
+                'title' => 'Invalid Number of Members',
+                'text' => "The room capacity is {$this->selectedRoom->capacity} people, but you entered {$value} members.",
+                'icon' => 'error',
+                'confirmButtonText' => 'I understand'
+            ]);
+        } else {
+            $this->resetErrorBag('members');
+        }
+    }
+
+    protected function validateStep1()
+    {
+        if (!$this->selectedDate) {
+            $this->addError('date', 'Please select a date');
+            return false;
+        }
+
+        $selectedDate = Carbon::parse($this->selectedDate);
+        if ($selectedDate->isPast() && !$selectedDate->isToday()) {
+            $this->addError('date', 'Cannot select past dates');
+            return false;
+        }
+
+        return true;
+    }
+
+    protected function validateStep2()
+    {
+        if (!$this->selectedRoom) {
+            $this->addError('room', 'Please select a room');
+            return false;
+        }
+
+        if (!$this->start_time || !$this->end_time) {
+            $this->addError('time', 'Please select both start and end times');
+            return false;
+        }
+
+        // Check if the selected time slot is still available
+        $conflictingBooking = Booking::where('room_id', $this->selectedRoom->id)
+            ->where('date', $this->selectedDate)
+            ->where(function ($query) {
+                $query->whereBetween('start_time', [$this->start_time, $this->end_time])
+                    ->orWhereBetween('end_time', [$this->start_time, $this->end_time]);
+            })
+            ->where('status', '!=', 'cancelled')
+            ->first();
+
+        if ($conflictingBooking) {
+            $this->addError('time', 'This time slot is no longer available');
+            return false;
+        }
+
+        return true;
     }
 
     public function goToStep($step)
@@ -449,20 +552,55 @@ class BookingStepper extends Component
     #[On('submitBooking')]
     public function submitBooking()
     {
+        // ตรวจสอบจำนวนสมาชิกก่อน
+        if ($this->selectedRoom && $this->members > $this->selectedRoom->capacity) {
+            $this->addError('members', "Cannot proceed with booking: Number of members ({$this->members}) exceeds room capacity ({$this->selectedRoom->capacity})");
+            return;
+        }
+
         $this->validate([
-            'date' => 'required|date',
+            'date' => 'required|date|after_or_equal:today',
             'room_id' => 'required|exists:rooms,id',
-            'start_time' => 'required',
-            'end_time' => 'required|after:start_time',
-            'name' => 'required',
+            'start_time' => 'required|date_format:H:i',
+            'end_time' => 'required|date_format:H:i|after:start_time',
+            'name' => 'required|string|min:2|max:255',
             'email' => 'required|email',
             'phone' => ['required', 'regex:/^(\+66|0)[0-9]{8,9}$/'],
+            'members' => ['required', 'integer', 'min:1'],
+            'band_name' => 'nullable|string|max:255',
+            'additional_request' => 'nullable|string|max:1000'
         ]);
 
+        // ตรวจสอบจำนวนคนไม่เกินความจุของห้อง
+        if ($this->members > $this->selectedRoom->capacity) {
+            $this->addError('members', "Number of members ({$this->members}) exceeds room capacity ({$this->selectedRoom->capacity})");
+            return;
+        }
+
+        // ตรวจสอบช่วงเวลาว่าง
+        $conflictingBooking = Booking::where('room_id', $this->selectedRoom->id)
+            ->where('date', $this->selectedDate)
+            ->where(function ($query) {
+                $query->whereBetween('start_time', [$this->start_time, $this->end_time])
+                    ->orWhereBetween('end_time', [$this->start_time, $this->end_time]);
+            })
+            ->where('status', '!=', 'cancelled')
+            ->first();
+
+        if ($conflictingBooking) {
+            $this->addError('booking', 'This time slot is no longer available. Please select another time.');
+            return;
+        }
+
+        // ตรวจสอบ stock เครื่องดนตรี
         foreach ($this->selectedInstruments as $id => $quantity) {
             $instrument = Instrument::find($id);
+            if (!$instrument) {
+                $this->addError('booking', "Invalid instrument selected.");
+                return;
+            }
             if ($instrument->stock < $quantity) {
-                session()->flash('error', "Not enough stock for {$instrument->name}");
+                $this->addError('booking', "Not enough {$instrument->name} available. Only {$instrument->stock} left.");
                 return;
             }
         }
@@ -470,6 +608,13 @@ class BookingStepper extends Component
         // Final validation before creating booking
         if (!$this->isTimeSlotAvailable($this->start_time, $this->end_time, $this->room_id, $this->date)) {
             $this->addError('booking', 'The selected time slot is no longer available. Please go back and select different times.');
+            return;
+        }
+
+        // ตรวจสอบจำนวนสมาชิกอีกครั้งก่อนสร้าง Booking
+        $room = Room::find($this->room_id);
+        if ($this->members > $room->capacity) {
+            $this->addError('booking', "Cannot create booking: Number of members ({$this->members}) exceeds room capacity ({$room->capacity})");
             return;
         }
 

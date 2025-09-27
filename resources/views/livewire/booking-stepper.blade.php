@@ -329,11 +329,27 @@
 
                     <!-- Band Name and Members -->
                     <div class="flex gap-4">
-                        <input type="text" wire:model="band_name" placeholder="Band Name (if any)"
-                            class="w-full p-2 border rounded">
-                        <input type="number" wire:model="members" placeholder="Members" min="1"
-                            class="w-32 p-2 border rounded">{{--  TODO: can't > than capacity --}}
+                        <div class="flex-1">
+                            <input type="text" wire:model="band_name" placeholder="Band Name (if any)"
+                                class="w-full p-2 border rounded">
+                        </div>
+                        <div class="relative w-32">
+                            <input type="number" wire:model.live="members" placeholder="Members" min="1"
+                                class="w-full p-2 border rounded 
+                                        @error('members') border-red-500 bg-red-50 @enderror">
+                        </div>
                     </div>
+                    @error('members')
+                        <div class="text-red-500 text-sm flex items-center gap-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20"
+                                fill="currentColor">
+                                <path fill-rule="evenodd"
+                                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                            <span>{{ $message }}</span>
+                        </div>
+                    @enderror
 
                     <!-- Additional Requests -->
                     <textarea wire:model="additional_request" rows="4" class="w-full p-2 border rounded"
