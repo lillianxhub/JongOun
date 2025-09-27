@@ -189,11 +189,11 @@
                     <!-- Results Info -->
                     <div class="flex items-center text-sm text-gray-700">
                         <span class="font-medium">Showing</span>
-                        <span class="mx-1 font-bold text-blue-600">{{ $recentBookings->firstItem() ?? 0 }}</span>
+                        <span class="mx-1 text-blue-600">{{ $recentBookings->firstItem() ?? 0 }}</span>
                         <span>to</span>
-                        <span class="mx-1 font-bold text-blue-600">{{ $recentBookings->lastItem() ?? 0 }}</span>
+                        <span class="mx-1 text-blue-600">{{ $recentBookings->lastItem() ?? 0 }}</span>
                         <span>of</span>
-                        <span class="mx-1 font-bold text-blue-600">{{ $recentBookings->total() }}</span>
+                        <span class="mx-1 text-blue-600">{{ $recentBookings->total() }}</span>
                         <span>results</span>
                     </div>
 

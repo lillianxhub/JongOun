@@ -149,9 +149,10 @@ class RoomManager extends Component
     public function confirmDelete($id)
     {
         $this->deleteRoomId = $id;
+        $room = Room::findOrFail($id);
         $this->dispatch('swal:confirm', [
             'title' => 'Are you sure?',
-            'text' => 'You want to delete this room? This action cannot be undone.',
+            'text' => "You want to delete room : {$room->name} ? This action cannot be undone.",
             'icon' => 'warning',
             'method' => 'deleteRoom',
             'color' => 'red'
@@ -175,6 +176,26 @@ class RoomManager extends Component
             $this->dispatch('swal:error', [
                 'title' => 'Error!',
                 'text' => 'Failed to delete room. Please try again.',
+                'icon' => 'error',
+            ]);
+        }
+    }
+
+    public function restoreRoom($id)
+    {
+        try {
+            $room = Room::withTrashed()->findOrFail($id);
+            $room->restore();
+
+            $this->dispatch('swal:success', [
+                'title' => 'Restored!',
+                'text' => "Room '{$room->name}' has been restored successfully.",
+                'icon' => 'success',
+            ]);
+        } catch (\Exception $e) {
+            $this->dispatch('swal:error', [
+                'title' => 'Error!',
+                'text' => 'Failed to restore room. Please try again.',
                 'icon' => 'error',
             ]);
         }
