@@ -13,6 +13,19 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
         // $schedule->command('inspire')->hourly();
+        $schedule->call(function () {
+            $bookings = Booking::with('istrument')
+                ->where('status', 'approved')
+                ->where("CONCAT(date, ' ' , end_time) <= ?", [now()])
+                ->get();
+            
+            foreach ($bookings as $booking) {
+                foreach ($booking->instruments as $item) {
+                    $item->increment('stock', $item->pivot->quantity);
+                }
+                $booking->update(['status' => 'finished']);
+            }
+        })->everyMinute();
     }
 
     /**

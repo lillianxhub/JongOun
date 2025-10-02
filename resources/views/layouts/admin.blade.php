@@ -114,6 +114,11 @@
                         {{ $totalRooms ?? 0 }}
                     </span>
                 </a>
+                <!-- Instruments -->
+                <a href="{{ route('admin.instruments') }}"
+                    class="flex items-center px-6 py-3 text-gray-300 hover:bg-gray-700 hover:text-white transition-colors">
+                    Instruments
+                </a>
 
                 <!-- Divider -->
                 <div class="px-6 py-3 mt-6">
