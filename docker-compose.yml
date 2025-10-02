@@ -16,6 +16,9 @@ services:
         depends_on:
             - db
 
+        command: >
+            sh -c "chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache && php-fpm "
+
     webserver:
         image: nginx:alpine
         container_name: jongoun-web
@@ -41,6 +44,15 @@ services:
             - "3309:3306"
         volumes:
             - dbdata:/var/lib/mysql
+        networks:
+            - jongoun
+
+    node:
+        image: node:18
+        working_dir: /var/www
+        volumes:
+            - ./:/var/www
+        command: sh -c "npm install && npm run dev"
         networks:
             - jongoun
 
