@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ config('app.name', 'Jong-Oun') }}</title>
 
-    @vite(['resources/js/app.js'])
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     @livewireStyles
 </head>
@@ -72,7 +72,6 @@
                         <button type="submit" class="text-red-500">Logout</button>
                     </form> --}}
                     <div class="flex items-center space-x-4">
-                        <a href="{{ route('admin.dashboard') }}" class="hover:text-blue-600 transition-colors">Dashboard</a>
                         <a href="{{ route('home') }}#service" class="hover:text-blue-500 transition-colors">Service</a>
                         <a href="{{ route('booking') }}" class="hover:text-blue-500 transition-colors">Booking</a>
                         <a href="{{ route('home') }}#about" class="hover:text-blue-600 transition-colors">About</a>
@@ -82,6 +81,7 @@
                             <!-- button -->
                             <button @click="open = !open"
                                 class="flex items-center space-x-2 bg-black text-white px-4 py-2 rounded shadow hover:bg-gray-800 transition">
+
                                 <span>{{ Auth::user()->name }}</span>
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
                                     stroke="currentColor">
@@ -92,7 +92,9 @@
 
                             <!-- menu -->
                             <div x-show="open" @click.away="open = false"
-                                class="absolute right-0 mt-10 w-48 bg-white border rounded-lg shadow-lg py-2 z-50">
+                                class="absolute right-0 mt-10 w-40 bg-white border rounded-lg py-1 shadow-lg z-50">
+                                <a href="{{ route('admin.dashboard') }}"
+                                    class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Dashboard</a>
                                 <a href="{{ route('profile.bookings') }}"
                                     class="block px-4 py-2 text-gray-700 hover:bg-gray-100">My Booking</a>
                                 <a href="{{ route('user.profile') }}"
@@ -100,7 +102,8 @@
                                 <form method="POST" action="{{ route('logout') }}">
                                     @csrf
                                     <button type="submit"
-                                        class="w-full text-left px-4 py-2 text-red-500 hover:bg-red-50">Logout</button>
+                                        class="w-full text-left px-4 py-2 text-red-500 hover:bg-red-50">Logout
+                                    </button>
                                 </form>
                             </div>
                         </div>

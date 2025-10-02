@@ -46,6 +46,7 @@ Route::middleware([
 
         // You can add more admin routes here:
         Route::get('/bookings', [AdminController::class, 'bookings'])->name('bookings');
+        Route::get('/instruments', [AdminController::class, 'instrument'])->name('instruments');
         // Route::get('/rooms', [AdminController::class, 'rooms'])->name('rooms');
         // Route::get('/users', [AdminController::class, 'users'])->name('users');
     });
