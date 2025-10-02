@@ -44,7 +44,9 @@ class DatabaseSeeder extends Seeder
             'name' => 'A01',
             'room_type_id' => 1,
             'capacity' => 5,
+            'instruments' => '["Lead-Guitar","Rhythm-Guitar","Bass","Drum","Microphone","Keyboard"]',
             'status' => 'available',
+            'available_times' => '["00:00", "01:00", "02:00", "03:00", "04:00", "05:00", "06:00", "07:00", "08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00"]',
             'price' => 150.00,
         ]);
         \App\Models\Room::create([
@@ -52,6 +54,8 @@ class DatabaseSeeder extends Seeder
             'room_type_id' => 2,
             'capacity' => 8,
             'status' => 'available',
+            'instruments' => '["Lead-Guitar","Rhythm-Guitar","Bass","Drum","Microphone","Keyboard"]',
+            'available_times' => '["00:00", "01:00", "02:00", "03:00", "04:00", "05:00", "06:00", "07:00", "08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00"]',
             'price' => 250.00,
         ]);
         \App\Models\Room::create([
@@ -59,6 +63,8 @@ class DatabaseSeeder extends Seeder
             'room_type_id' => 3,
             'capacity' => 25,
             'status' => 'available',
+            'instruments' => '["Lead-Guitar","Rhythm-Guitar","Bass","Drum","Microphone","Keyboard"]',
+            'available_times' => '["00:00", "01:00", "02:00", "03:00", "04:00", "05:00", "06:00", "07:00", "08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00"]',
             'price' => 500.00,
         ]);
 
@@ -70,13 +76,13 @@ class DatabaseSeeder extends Seeder
         ]);
 
         \App\Models\Instrument::create([
-            'name' => 'microphone',
+            'name' => 'Microphone',
             'stock' => 99,
             'price' => 20.00,
         ]);
 
         \App\Models\Instrument::create([
-            'name' => 'cable',
+            'name' => 'Cable',
             'stock' => 99,
             'price' => 0.00,
         ]);
