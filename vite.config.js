@@ -19,4 +19,5 @@ export default defineConfig({
             host: "localhost",
         },
     },
+    optimizeDeps: { force: true },
 });
