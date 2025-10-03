@@ -10,46 +10,49 @@ use App\Models\Instrument;
 
 class AdminController extends Controller
 {
+
+   private function getStats()
+   {
+        return [
+            'totalBookings' => Booking::count(),
+            'totalUsers' => User::count(),
+            'pendingBookings' => Booking::where('status', 'pending')->count(),
+            'totalRooms' => Room::count(),
+            'totalInstrument' => Instrument::count(),
+        ];
+   } 
+
     public function dashboard()
     {
-        $totalBookings = Booking::count();
-        $totalUsers = User::count();
-        $pendingBookings = Booking::where('status', 'pending')->count();
-        $totalRooms = Room::count();
+        $stats = $this->getStats();
 
         $recentBookings = Booking::with('user', 'room')
             ->orderBy('created_at', 'desc')
             ->take(5)
             ->get();
 
-        return view('admin.dashboard', compact(
-            'totalBookings',
-            'totalUsers',
-            'pendingBookings',
-            'totalRooms',
-            'recentBookings'
-        ));
+        return view('admin.dashboard', array_merge($stats, [
+            'recentBookings' => $recentBookings
+        ]));
     }
     public function bookings()
     {
-        $totalBookings = Booking::count();
-        $totalUsers = User::count();
-        $totalRooms = Room::count();
+        $stats = $this->getStats();
 
-        $bookings = Booking::with('user', 'room')->orderBy('created_at', 'desc')->get();
-        return view('admin.bookings', compact(
-            'totalBookings',
-            'totalRooms',
-            'bookings'
+        $bookings = Booking::with('user', 'room')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return view('admin.bookings', array_merge($stats, [
+            'bookings' => $bookings
+        ],
         ));
     }
     
     public function instrument()
     {
-        $Instrument = Instrument::count();
+        $stats = $this->getStats();
 
-        return view('admin.instrument', compact(
-            'Instrument'
-        ));
+        return view('admin.instrument', $stats);
     }
 }

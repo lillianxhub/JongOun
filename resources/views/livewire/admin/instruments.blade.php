@@ -1,20 +1,23 @@
 <div>
     <!-- Header Section -->
-    <div class="flex items-center justify-between mb-8">
-        <div class="flex items-center">
-            <div class="bg-gradient-to-br from-purple-500 to-blue-400 rounded-xl p-3 shadow-lg">
-                <i class="fas fa-guitar text-white text-2xl"></i>
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-8">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center">
+                <div class="bg-gradient-to-br from-purple-500 to-blue-400 rounded-xl p-3 shadow-lg">
+                    <i class="fas fa-guitar text-white text-2xl"></i>
+                </div>
+                <div class="ml-4">
+                    <h2 class="text-3xl font-bold text-gray-800">Instruments</h2>
+                    <p class="text-gray-500 text-sm mt-1">Manage your music instruments inventory</p>
+                </div>
             </div>
-            <div class="ml-4">
-                <h2 class="text-3xl font-bold text-gray-800">Instruments</h2>
-                <p class="text-gray-500 text-sm mt-1">Manage your music instruments inventory</p>
-            </div>
+            <button wire:click="create"
+                class="bg-gradient-to-r from-purple-500 to-blue-400 hover:from-purple-600 hover:to-blue-500 text-white px-6 py-3 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 flex items-center gap-2 font-semibold">
+                <i class="fas fa-plus"></i>
+                <span>Add New Instrument</span>
+            </button>
         </div>
-        <button wire:click="create"
-            class="bg-gradient-to-r from-purple-500 to-blue-400 hover:from-purple-600 hover:to-blue-500 text-white px-6 py-3 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 flex items-center gap-2 font-semibold">
-            <i class="fas fa-plus"></i>
-            <span>Add New Instrument</span>
-        </button>
+
     </div>
 
     <!-- Table Card -->

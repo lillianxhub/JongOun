@@ -14,7 +14,7 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')->hourly();
         $schedule->call(function () {
-            $bookings = Booking::with('istrument')
+            $bookings = Booking::with('instrument')
                 ->where('status', 'approved')
                 ->where("CONCAT(date, ' ' , end_time) <= ?", [now()])
                 ->get();

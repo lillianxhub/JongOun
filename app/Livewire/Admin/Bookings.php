@@ -5,6 +5,7 @@ namespace App\Livewire\Admin;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Livewire\Attributes\On;
+use App\Models\Instrument;
 use App\Models\Booking;
 use App\Models\User;
 use App\Models\Room;
