@@ -104,7 +104,27 @@ class Bookings extends Component
     #[On('approve')]
     public function approve($id)
     {
-        $booking = Booking::findOrFail($id);
+        $booking = Booking::with('instruments')->findOrFail($id);
+        
+
+        // Check instrument stock
+        foreach ($booking->instruments as $item) {
+            if ($item->stock < $item->pivot->quantity) {
+                $this->dispatch('swal:error', [
+                    'title' => 'Insufficient Stock',
+                    'text' => "Not enough stock for instrument: {$item->name}",
+                    'icon' => 'error',
+                ]);
+                return;
+            }
+        }
+        
+        // update stock
+        foreach ($booking->instruments as $item) {
+            $item->decrement('stock', $item->pivot->quantity);
+        }
+        
+        // update booking status
         $booking->update(['status' => 'approved']);
         $this->loadStats();
 
@@ -131,6 +151,14 @@ class Bookings extends Component
     public function cancel($id)
     {
         $booking = Booking::findOrFail($id);
+        
+        if ($booking->status === 'approved') {
+            // Return instruments to stock if booking was approved
+            foreach ($booking->instruments as $item) {
+                $item->increment('stock', $item->pivot->quantity);
+            }
+        }
+
         $booking->update(['status' => 'canceled']);
         $this->loadStats();
 

@@ -74,12 +74,7 @@
                 <!-- Dashboard -->
                 <a href="{{ route('admin.dashboard') }}"
                     class="flex items-center px-6 py-3 text-gray-300 hover:bg-gray-700 hover:text-white transition-colors {{ request()->routeIs('admin.dashboard') ? 'bg-gray-700 text-white border-r-4 border-blue-500' : '' }}">
-                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"></path>
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M8 5a2 2 0 012-2h4a2 2 0 012 2v6H8V5z"></path>
-                    </svg>
+                    <i class="fas fa-tachometer-alt w-5 mr-3"></i>
                     Dashboard
                 </a>
 
@@ -87,11 +82,7 @@
                 <a href="{{ route('admin.bookings') }}"
                     class="flex items-center px-6 py-3 text-gray-300 hover:bg-gray-700 hover:text-white transition-colors {{ request()->routeIs('admin.bookings') ? 'bg-gray-700 text-white border-r-4 border-blue-500' : '' }}"
                     onclick="document.getElementById('bookings').scrollIntoView({behavior: 'smooth'})">
-                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2">
-                        </path>
-                    </svg>
+                    <i class="fas fa-clipboard-list w-5 mr-3"></i>
                     Total Bookings
                     <span class="ml-auto bg-blue-500 text-white text-xs rounded-full px-2 py-1"
                         id="sidebar-total-bookings">
@@ -100,19 +91,21 @@
                 </a>
 
                 <!-- Total Rooms -->
-                <a href="#rooms"
+                <a href="{{ route('admin.dashboard') }}#rooms"
                     class="flex items-center px-6 py-3 text-gray-300 hover:bg-gray-700 hover:text-white transition-colors"
                     onclick="document.getElementById('rooms').scrollIntoView({behavior: 'smooth'})">
-                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4">
-                        </path>
-                    </svg>
+                    <i class="fas fa-door-open w-5 mr-3"></i>
                     Total Rooms
                     <span class="ml-auto bg-green-500 text-white text-xs rounded-full px-2 py-1"
                         id="sidebar-total-rooms">
                         {{ $totalRooms ?? 0 }}
                     </span>
+                </a>
+                <!-- Instruments -->
+                <a href="{{ route('admin.instruments') }}"
+                    class="flex items-center px-6 py-3 text-gray-300 hover:bg-gray-700 hover:text-white transition-colors">
+                    <i class="fas fa-music w-5 mr-3"></i>
+                    Instruments
                 </a>
 
                 <!-- Divider -->
@@ -123,10 +116,7 @@
                 <!-- Back to Website -->
                 <a href="{{ route('home') }}"
                     class="flex items-center px-6 py-3 text-gray-300 hover:bg-gray-700 hover:text-white transition-colors">
-                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-                    </svg>
+                    <i class="fas fa-arrow-left w-5 mr-3"></i>
                     Back to Website
                 </a>
 
@@ -137,10 +127,7 @@
 
                 <a href="{{ route('profile.show') }}"
                     class="flex items-center px-6 py-3 text-gray-300 hover:bg-gray-700 hover:text-white transition-colors">
-                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                    </svg>
+                    <i class="fas fa-user w-5 mr-3"></i>
                     Profile
                 </a>
 
@@ -149,11 +136,7 @@
                     @csrf
                     <button type="submit"
                         class="flex items-center w-full px-6 py-3 text-gray-300 hover:bg-red-700 hover:text-white transition-colors">
-                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1">
-                            </path>
-                        </svg>
+                        <i class="fas fa-sign-out-alt w-5 mr-3"></i>
                         Logout
                     </button>
                 </form>

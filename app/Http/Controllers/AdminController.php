@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Booking;
 use App\Models\User;
 use App\Models\Room;
+use App\Models\Instrument;
 
 class AdminController extends Controller
 {
@@ -40,6 +41,15 @@ class AdminController extends Controller
             'totalBookings',
             'totalRooms',
             'bookings'
+        ));
+    }
+    
+    public function instrument()
+    {
+        $Instrument = Instrument::count();
+
+        return view('admin.instrument', compact(
+            'Instrument'
         ));
     }
 }
