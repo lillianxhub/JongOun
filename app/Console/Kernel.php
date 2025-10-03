@@ -15,23 +15,24 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
         // $schedule->command('inspire')->hourly();
-        $schedule->call(function () {
-            $bookings = Booking::with('instruments')
-                ->where('status', 'approved')
-                ->whereRaw("CONCAT(date, ' ' , end_time) <= ?", [now()])
-                ->get();
+        
+        // $schedule->call(function () {
+        //     $bookings = Booking::with('instruments')
+        //         ->where('status', 'approved')
+        //         ->whereRaw("CONCAT(date, ' ' , end_time) <= ?", [now()])
+        //         ->get();
             
-            DB::transaction(function () use ($bookings) {
-                foreach ($bookings as $booking) {
-                    foreach ($booking->instruments as $instrument) {
-                        // Increment the stock of each instrument
-                        $instrument->increment('stock', $instrument->pivot->quantity);
-                    }
-                    // Update the booking status to 'finished'
-                    $booking->update(['status' => 'finished']);
-                }
-            });
-        })->everyMinute();
+        //     DB::transaction(function () use ($bookings) {
+        //         foreach ($bookings as $booking) {
+        //             foreach ($booking->instruments as $instrument) {
+        //                 // Increment the stock of each instrument
+        //                 $instrument->increment('stock', $instrument->pivot->quantity);
+        //             }
+        //             // Update the booking status to 'finished'
+        //             $booking->update(['status' => 'finished']);
+        //         }
+        //     });
+        // })->everyHourly();
     }
 
     /**

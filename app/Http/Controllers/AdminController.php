@@ -21,9 +21,30 @@ class AdminController extends Controller
             'totalInstrument' => Instrument::count(),
         ];
    } 
+   
+   protected function triggerBookingScheduler() 
+   {
+        $now = now();
+        
+        $bookings = Booking::with('instruments')
+            ->where('status', 'approved')
+            ->whereRaw("CONCAT(date, ' ' , end_time) <= ?", [$now])
+            ->get();
+
+        foreach ($bookings as $booking) {
+            foreach ($booking->instruments as $instrument) {
+                // Increment the stock of each instrument
+                $instrument->increment('stock', $instrument->pivot->quantity);
+            }
+            // Update the booking status to 'finished'
+            $booking->update(['status' => 'finished']);
+        }
+   }
 
     public function dashboard()
     {
+        $this->triggerBookingScheduler(); 
+
         $stats = $this->getStats();
 
         $recentBookings = Booking::with('user', 'room')

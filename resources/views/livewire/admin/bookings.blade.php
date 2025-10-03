@@ -366,6 +366,11 @@
                                 class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 flex items-center gap-2">
                                 <i class="fa-solid fa-square-check"></i> Approve
                             </button>
+                        @elseif ($selectedBooking->status === 'approved')
+                            <button wire:click="confirmCancel({{ $selectedBooking->id }})"
+                                class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 flex items-center gap-2">
+                                <i class="fa-solid fa-square-xmark"></i> Cancel
+                            </button>
                         @else
                             <span class="text-gray-500 italic">No actions available</span>
                         @endif
