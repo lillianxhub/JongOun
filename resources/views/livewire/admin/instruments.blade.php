@@ -2,7 +2,7 @@
     <!-- Header Section -->
     <div class="flex items-center justify-between mb-8">
         <div class="flex items-center">
-            <div class="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl p-3 shadow-lg">
+            <div class="bg-gradient-to-br from-purple-500 to-blue-400 rounded-xl p-3 shadow-lg">
                 <i class="fas fa-guitar text-white text-2xl"></i>
             </div>
             <div class="ml-4">
@@ -11,7 +11,7 @@
             </div>
         </div>
         <button wire:click="create"
-            class="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-6 py-3 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 flex items-center gap-2 font-semibold">
+            class="bg-gradient-to-r from-purple-500 to-blue-400 hover:from-purple-600 hover:to-blue-500 text-white px-6 py-3 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 flex items-center gap-2 font-semibold">
             <i class="fas fa-plus"></i>
             <span>Add New Instrument</span>
         </button>
@@ -24,16 +24,16 @@
                 <thead class="bg-gradient-to-r from-gray-50 to-gray-100">
                     <tr>
                         <th class="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">
-                            <i class="fas fa-tag mr-2 text-blue-500"></i>Name
+                            Name
                         </th>
                         <th class="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">
-                            <i class="fas fa-boxes mr-2 text-green-500"></i>Stock
+                            Stock
                         </th>
                         <th class="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">
-                            <i class="fas fa-dollar-sign mr-2 text-yellow-500"></i>Price
+                            Price
                         </th>
                         <th class="px-6 py-4 text-center text-xs font-bold text-gray-600 uppercase tracking-wider">
-                            <i class="fas fa-cog mr-2 text-purple-500"></i>Actions
+                            Actions
                         </th>
                     </tr>
                 </thead>

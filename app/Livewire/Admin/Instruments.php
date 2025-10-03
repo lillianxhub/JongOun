@@ -11,8 +11,6 @@ use App\Models\Room;
 
 class Instruments extends Component
 {
-    public $instruments;
-
     public $totalBookings;
     public $totalUsers;
     public $pendingBookings;
@@ -20,6 +18,8 @@ class Instruments extends Component
 
     public $showModal = false;
     public $instrumentId;
+
+    public $instruments;
     public $name;
     public $stock;
     public $price;

@@ -92,7 +92,7 @@
 
                 <!-- Total Rooms -->
                 <a href="{{ route('admin.dashboard') }}#rooms"
-                    class="flex items-center px-6 py-3 text-gray-300 hover:bg-gray-700 hover:text-white transition-colors"
+                    class="flex items-center px-6 py-3 text-gray-300 hover:bg-gray-700 hover:text-white transition-colors {{ request()->routeIs('admin.dashboard') ? 'bg-gray-700 text-white border-r-4 border-blue-500' : '' }}"
                     onclick="document.getElementById('rooms').scrollIntoView({behavior: 'smooth'})">
                     <i class="fas fa-door-open w-5 mr-3"></i>
                     Total Rooms
@@ -103,9 +103,13 @@
                 </a>
                 <!-- Instruments -->
                 <a href="{{ route('admin.instruments') }}"
-                    class="flex items-center px-6 py-3 text-gray-300 hover:bg-gray-700 hover:text-white transition-colors">
+                    class="flex items-center px-6 py-3 text-gray-300 hover:bg-gray-700 hover:text-white transition-colors {{ request()->routeIs('admin.instruments') ? 'bg-gray-700 text-white border-r-4 border-blue-500' : '' }}">
                     <i class="fas fa-music w-5 mr-3"></i>
                     Instruments
+                    <span class="ml-auto bg-purple-500 text-white text-xs rounded-full px-2 py-1"
+                        id="sidebar-total-rooms">
+                        {{ $totalInstrument ?? 0 }}
+                    </span>
                 </a>
 
                 <!-- Divider -->
