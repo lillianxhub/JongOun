@@ -14,6 +14,7 @@ use Illuminate\Support\Str;
 use Laravel\Fortify\Actions\RedirectIfTwoFactorAuthenticatable;
 use Laravel\Fortify\Fortify;
 use Laravel\Fortify\Contracts\LoginResponse;
+use Laravel\Fortify\Contracts\RegisterResponse;
 
 class FortifyServiceProvider extends ServiceProvider
 {
@@ -37,7 +38,7 @@ class FortifyServiceProvider extends ServiceProvider
         Fortify::redirectUserForTwoFactorAuthenticationUsing(RedirectIfTwoFactorAuthenticatable::class);
 
         RateLimiter::for('login', function (Request $request) {
-            $throttleKey = Str::transliterate(Str::lower($request->input(Fortify::username())).'|'.$request->ip());
+            $throttleKey = Str::transliterate(Str::lower($request->input(Fortify::username())) . '|' . $request->ip());
 
             return Limit::perMinute(5)->by($throttleKey);
         });
@@ -45,7 +46,7 @@ class FortifyServiceProvider extends ServiceProvider
         RateLimiter::for('two-factor', function (Request $request) {
             return Limit::perMinute(5)->by($request->session()->get('login.id'));
         });
-        
+
         // Customizing the login response to redirect based on user role
         $this->app->instance(LoginResponse::class, new class implements LoginResponse {
             public function toResponse($request)
@@ -53,10 +54,24 @@ class FortifyServiceProvider extends ServiceProvider
                 $user = $request->user();
 
                 if ($user->role === 'admin') {
-                    return redirect()->intended('/admin/dashboard');
+                    return redirect()->route('admin.dashboard');
                 } else {
-                    return redirect()->intended('/');
+                    return redirect()->route('home');
                 }
+            }
+        });
+
+        // Customizing the register response to redirect to a specific page after registration
+        $this->app->instance(RegisterResponse::class, new class implements RegisterResponse {
+            public function toResponse($request)
+            {
+                $user = $request->user();
+
+                if ($user->role === 'admin') {
+                    return redirect()->route('admin.dashboard');
+                }
+
+                return redirect()->route('home');
             }
         });
     }

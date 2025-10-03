@@ -289,9 +289,18 @@
         @if ($errors->has('booking'))
             <div class="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
                 <p>{{ $errors->first('booking') }}</p>
-                <button wire:click="goToStep(2)" class="mt-2 px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700">
-                    Go Back to Select Times
-                </button>
+
+                @if ($errorType === 'time_conflict')
+                    <button wire:click="goToStep(2)"
+                        class="mt-2 px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700">
+                        Go Back to Select Times
+                    </button>
+                @elseif($errorType === 'invalid_instrument' || ($errorType === 'insufficient_stock' && $errorInstrumentId))
+                    <button wire:click="removeInstrumentError({{ $errorInstrumentId }})"
+                        class="mt-2 px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700">
+                        Remove Instrument
+                    </button>
+                @endif
             </div>
         @endif
 
@@ -319,7 +328,8 @@
 
                     <!-- Phone Field -->
                     <div>
-                        <input type="tel" wire:model.live="phone" placeholder="Your Phone Number (e.g., 0812345678)"
+                        <input type="tel" wire:model.live="phone"
+                            placeholder="Your Phone Number (e.g., 0812345678)"
                             class="w-full mb-2 p-2 border rounded @error('phone') border-red-500 @enderror" required>
                         @error('phone')
                             <span class="text-red-500 text-sm">{{ $message }}</span>
@@ -359,7 +369,7 @@
                     <button wire:click="confirmBooking" @disabled(!$name || !$email || !$phone) @class([
                         'px-4 py-2 rounded text-white transition-colors duration-200',
                         'bg-green-600 hover:bg-green-700 cursor-pointer' => $this->isFormValid,
-                        'bg-green-300 cursor-not-allowed' => !$this->isFormValid,
+                        'bg-gray-300 cursor-default' => !$this->isFormValid,
                     ])>
                         <span wire:loading.remove wire:target="confirmBooking">Reserve booking</span>
                         <span wire:loading wire:target="confirmBooking">Processing...</span>
@@ -403,11 +413,19 @@
                             @if (!isset($selectedInstruments[$instrument->id]))
                                 <div class="flex justify-between items-center border rounded p-2">
                                     <div class="flex items-center gap-2">
-                                        <button wire:click="addInstrument({{ $instrument->id }})"
-                                            class="bg-green-500 hover:bg-green-300 text-white px-3 py-1 rounded">
-                                            +
-                                        </button>
-                                        <span>{{ $instrument->name }}</span>
+                                        @if ($instrument->stock > 0)
+                                            <button wire:click="addInstrument({{ $instrument->id }})"
+                                                class="bg-green-500 hover:bg-green-300 text-white px-3 py-1 rounded">
+                                                <i class="fas fa-plus"></i>
+                                            </button>
+                                            <span>{{ $instrument->name }}</span>
+                                        @else
+                                            <button disabled
+                                                class="bg-gray-300 text-white px-3 py-1 rounded cursor-not-allowed">
+                                                <i class="fas fa-xmark"></i>
+                                            </button>
+                                            <span class="text-gray-400">{{ $instrument->name }} (Out of stock)</span>
+                                        @endif
                                     </div>
                                     <span class="text-gray-600">
                                         {{ $instrument->price > 0 ? '฿' . number_format($instrument->price, 2) : 'Free' }}
@@ -417,36 +435,6 @@
                         @endforeach
                     </div>
                 </div>
-
-                {{-- Selected Instruments --}}
-                @if ($selectedInstruments)
-                    <div class="mb-6">
-                        <div class="space-y-3">
-                            @foreach ($selectedInstruments as $id => $quantity)
-                                @php $instrument = $instruments->firstWhere('id', $id); @endphp
-                                <div class="p-2 border rounded bg-gray-50">
-                                    <div class="flex justify-between items-center gap-2">
-                                        <div class="flex items-center gap-2">
-                                            <button wire:click="removeInstrument({{ $id }})"
-                                                class="bg-red-500 hover:bg-red-300 text-white px-3 py-1 rounded">&times;</button>
-                                            <span>{{ $instrument->name }}</span>
-                                            <span
-                                                class="ml-2 text-gray-500">{{ $instrument->price > 0 ? '฿' . number_format($instrument->price * $quantity, 2) : 'Free' }}
-                                            </span>
-                                        </div>
-                                        <div class="flex items-center gap-2">
-                                            <button wire:click="decreaseInstrument({{ $id }})"
-                                                class="px-2 border">-</button>
-                                            <span>{{ $quantity }}</span>
-                                            <button wire:click="increaseInstrument({{ $id }})"
-                                                class="px-2 border">+</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            @endforeach
-                        </div>
-                    </div>
-                @endif
 
                 <div class="border p-4">
                     <p><strong>Price per hour:</strong>

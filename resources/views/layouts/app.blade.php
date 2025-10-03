@@ -63,14 +63,6 @@
         <div>
             @auth
                 @if (auth()->user()->role === 'admin')
-                    {{-- <a href="{{ route('dashboard') }}" class="mr-4 hover:text-blue-600 transition-colors">Dashboard</a>
-                    <a href="{{ route('profile.bookings') }}" class="mr-4 hover:text-blue-600 transition-colors">My
-                        Booking</a>
-                    <a href="{{ route('profile.show') }}" class="mr-4 hover:text-blue-600 transition-colors">Profile</a>
-                    <form method="POST" action="{{ route('logout') }}" class="inline">
-                        @csrf
-                        <button type="submit" class="text-red-500">Logout</button>
-                    </form> --}}
                     <div class="flex items-center space-x-4">
                         <a href="{{ route('home') }}#service" class="hover:text-blue-500 transition-colors">Service</a>
                         <a href="{{ route('booking') }}" class="hover:text-blue-500 transition-colors">Booking</a>
