@@ -4,6 +4,8 @@ namespace App\Console;
 
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use Illuminate\Support\Facades\DB;
+use App\Models\Booking;
 
 class Kernel extends ConsoleKernel
 {
@@ -14,17 +16,21 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')->hourly();
         $schedule->call(function () {
-            $bookings = Booking::with('instrument')
+            $bookings = Booking::with('instruments')
                 ->where('status', 'approved')
-                ->where("CONCAT(date, ' ' , end_time) <= ?", [now()])
+                ->whereRaw("CONCAT(date, ' ' , end_time) <= ?", [now()])
                 ->get();
             
-            foreach ($bookings as $booking) {
-                foreach ($booking->instruments as $item) {
-                    $item->increment('stock', $item->pivot->quantity);
+            DB::transaction(function () use ($bookings) {
+                foreach ($bookings as $booking) {
+                    foreach ($booking->instruments as $instrument) {
+                        // Increment the stock of each instrument
+                        $instrument->increment('stock', $instrument->pivot->quantity);
+                    }
+                    // Update the booking status to 'finished'
+                    $booking->update(['status' => 'finished']);
                 }
-                $booking->update(['status' => 'finished']);
-            }
+            });
         })->everyMinute();
     }
 
