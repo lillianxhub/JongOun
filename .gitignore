@@ -17,3 +17,6 @@ yarn-error.log
 /.idea
 /.vscode
 /JongOunDesign
+Dockerfile
+docker-compose.yml
+.dockerignore
