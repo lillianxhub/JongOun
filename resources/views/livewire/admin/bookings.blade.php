@@ -4,10 +4,15 @@
     <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-8">
         <!-- Title -->
         <div class="flex items-center justify-between mb-6">
-            <h1 class="text-3xl font-bold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent">
-                <i class="fa-solid fa-calendar-days text-blue-500 mr-2"></i>
-                Total Bookings
-            </h1>
+            <div class="flex items-center">
+                <div class="bg-gradient-to-br from-blue-500 to-green-400 rounded-xl p-3 shadow-lg">
+                    <i class="fas fa-calendar-alt text-white text-2xl"></i>
+                </div>
+                <div class="ml-4">
+                    <h2 class="text-3xl font-bold text-gray-800">Total Booking</h2>
+                    <p class="text-gray-500 text-sm mt-1">Manage your music room booking</p>
+                </div>
+            </div>
             <div class="text-sm text-gray-500 bg-gray-50 px-3 py-2 rounded-lg">
                 <i class="fa-solid fa-chart-bar mr-1"></i>
                 {{ $recentBookings->total() }} results found
@@ -111,7 +116,7 @@
     </div>
 
     <!-- Table -->
-    <div class="bg-white shadow rounded-lg p-6 overflow-x-auto">
+    <div class="bg-white shadow-xl rounded-2xl overflow-hidden p-6 overflow-x-auto">
         <table class="min-w-full divide-y divide-gray-200">
             <thead>
                 <tr>
@@ -159,11 +164,13 @@
                         <td class="px-4 py-3">
                             <span
                                 class="px-2 py-1 rounded-full text-xs font-medium
-                            {{ $booking->status === 'approved'
-                                ? 'bg-green-100 text-green-700'
-                                : ($booking->status === 'canceled'
-                                    ? 'bg-red-100 text-red-700'
-                                    : 'bg-yellow-100 text-yellow-700') }}">
+                                    {{ $booking->status === 'approved'
+                                        ? 'bg-green-100 text-green-700'
+                                        : ($booking->status === 'canceled'
+                                            ? 'bg-red-100 text-red-700'
+                                            : ($booking->status === 'finished'
+                                                ? 'bg-gray-100 text-gray-700'
+                                                : 'bg-yellow-100 text-yellow-700')) }}">
                                 {{ ucfirst($booking->status) }}
                             </span>
                         </td>
@@ -358,6 +365,11 @@
                             <button wire:click="confirmApprove({{ $selectedBooking->id }})"
                                 class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 flex items-center gap-2">
                                 <i class="fa-solid fa-square-check"></i> Approve
+                            </button>
+                        @elseif ($selectedBooking->status === 'approved')
+                            <button wire:click="confirmCancel({{ $selectedBooking->id }})"
+                                class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 flex items-center gap-2">
+                                <i class="fa-solid fa-square-xmark"></i> Cancel
                             </button>
                         @else
                             <span class="text-gray-500 italic">No actions available</span>

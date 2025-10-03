@@ -5,6 +5,7 @@ namespace App\Livewire\Admin;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Livewire\Attributes\On;
+use App\Models\Instrument;
 use App\Models\Booking;
 use App\Models\User;
 use App\Models\Room;
@@ -104,35 +105,43 @@ class Bookings extends Component
     #[On('approve')]
     public function approve($id)
     {
-        $booking = Booking::with('instruments')->findOrFail($id);
-        
+        try {
+            $booking = Booking::with('instruments')->findOrFail($id);
 
-        // Check instrument stock
-        foreach ($booking->instruments as $item) {
-            if ($item->stock < $item->pivot->quantity) {
-                $this->dispatch('swal:error', [
-                    'title' => 'Insufficient Stock',
-                    'text' => "Not enough stock for instrument: {$item->name}",
-                    'icon' => 'error',
-                ]);
-                return;
+            // Check instrument stock
+            foreach ($booking->instruments as $item) {
+                if ($item->stock < $item->pivot->quantity) {
+                    $this->dispatch('swal:error', [
+                        'title' => 'Insufficient Stock',
+                        'text' => "Not enough stock for instrument: {$item->name}",
+                        'icon' => 'error',
+                    ]);
+                    return;
+                }
             }
-        }
-        
-        // update stock
-        foreach ($booking->instruments as $item) {
-            $item->decrement('stock', $item->pivot->quantity);
-        }
-        
-        // update booking status
-        $booking->update(['status' => 'approved']);
-        $this->loadStats();
 
-        $this->dispatch('swal:success', [
-            'title' => 'Approved!',
-            'text' => 'Booking approved successfully',
-            'icon' => 'success',
-        ]);
+            // update stock
+            foreach ($booking->instruments as $item) {
+                $item->decrement('stock', $item->pivot->quantity);
+            }
+
+            // update booking status
+            $booking->update(['status' => 'approved']);
+            $this->loadStats();
+
+            $this->dispatch('swal:success', [
+                'title' => 'Approved!',
+                'text' => 'Booking approved successfully',
+                'icon' => 'success',
+            ]);
+        } catch (\Exception $e) {
+            logger()->error("Approve Booking Error: " . $e->getMessage(), ['booking_id' => $id]);
+            $this->dispatch('swal:error', [
+                'title' => 'Error!',
+                'text' => 'Something went wrong while approving the booking.',
+                'icon' => 'error',
+            ]);
+        }
     }
 
     public function confirmCancel($id)
@@ -150,26 +159,34 @@ class Bookings extends Component
     #[On('cancel')]
     public function cancel($id)
     {
-        $booking = Booking::findOrFail($id);
-        
-        if ($booking->status === 'approved') {
-            // Return instruments to stock if booking was approved
-            foreach ($booking->instruments as $item) {
-                $item->increment('stock', $item->pivot->quantity);
+        try {
+            $booking = Booking::with('instruments')->findOrFail($id);
+
+            if ($booking->status === 'approved') {
+                // Return instruments to stock if booking was approved
+                foreach ($booking->instruments as $item) {
+                    $item->increment('stock', $item->pivot->quantity);
+                }
             }
+
+            $booking->update(['status' => 'canceled']);
+            $this->loadStats();
+
+            $this->dispatch('swal:success', [
+                'title' => 'Canceled!',
+                'text' => 'Booking canceled successfully',
+                'icon' => 'error',
+                'color' => 'red',
+            ]);
+        } catch (\Exception $e) {
+            logger()->error("Cancel Booking Error: " . $e->getMessage(), ['booking_id' => $id]);
+            $this->dispatch('swal:error', [
+                'title' => 'Error!',
+                'text' => 'Something went wrong while canceling the booking.',
+                'icon' => 'error',
+            ]);
         }
-
-        $booking->update(['status' => 'canceled']);
-        $this->loadStats();
-
-        $this->dispatch('swal:success', [
-            'title' => 'Canceled!',
-            'text' => 'Booking canceled successfully',
-            'icon' => 'error',
-            'color' => 'red',
-        ]);
     }
-
     public function getBookingsProperty()
     {
         return Booking::with(['user', 'room'])
