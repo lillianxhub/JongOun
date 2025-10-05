@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Models\Booking;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\IndexController;
+use App\Http\Controllers\BookingController;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,10 +31,7 @@ Route::middleware([
         return view('booking');
     })->name('booking');
 
-    Route::get('/profile/bookings', function () {
-        $bookings = Booking::with('room')->where('user_id', auth()->id())->latest()->get();
-        return view('profile.bookings', compact('bookings'));
-    })->name('profile.bookings');
+    Route::get('/profile/bookings', [BookingController::class, 'booking'])->name('profile.bookings');
 
     Route::get('/profile', function () {
         return view('profile.show');

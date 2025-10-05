@@ -20,7 +20,10 @@
         {{ $slot }}
     </main>
 
+    @livewireScripts
+
     <!-- SweetAlert2 CSS & JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             window.addEventListener('swal:confirm', event => {
@@ -63,8 +66,6 @@
             });
         });
     </script>
-    @livewireScripts
-
 </body>
 
 </html>
