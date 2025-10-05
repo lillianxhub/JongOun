@@ -38,7 +38,7 @@ Route::middleware([
     Route::get('/profile', function () {
         return view('profile.show');
     })->name('user.profile');
-
+     
     // Admin routes (only accessible to admin users)
     Route::middleware('admin')->prefix('admin')->name('admin.')->group(function () {
         Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
@@ -48,5 +48,9 @@ Route::middleware([
         Route::get('/instruments', [AdminController::class, 'instrument'])->name('instruments');
         // Route::get('/rooms', [AdminController::class, 'rooms'])->name('rooms');
         // Route::get('/users', [AdminController::class, 'users'])->name('users');
+       
+
+
     });
+
 });
