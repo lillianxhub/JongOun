@@ -273,9 +273,18 @@ class BookingStepper extends Component
         }
     }
 
-
     public function addInstrument($id)
     {
+        $instrument = $this->instruments->find($id);
+        if (!$instrument) {
+            return;
+        }
+
+        if ($instrument->stock <= 0) {
+            $this->addError('booking', "No stock available for {$instrument->name}");
+            return;
+        }
+
         $this->selectedInstruments[$id] = 1;
         $this->calculatePrice();
     }
@@ -288,7 +297,17 @@ class BookingStepper extends Component
 
     public function increaseInstrument($id)
     {
-        $this->selectedInstruments[$id]++;
+        $instrument = $this->instruments->find($id);
+        if (!$instrument) {
+            return;
+        }
+
+        if ($this->selectedInstruments[$id] < $instrument->stock) {
+            $this->selectedInstruments[$id]++;
+        } else {
+            $this->addError('booking', "No more stock available for {$instrument->name}");
+        }
+
         $this->calculatePrice();
     }
 

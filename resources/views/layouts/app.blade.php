@@ -12,6 +12,14 @@
 </head>
 
 <body class="font-sans antialiased bg-gray-200">
+
+    <!-- Navbar Livewire layout -->
+    @include('navigation-menu')
+
+    <main>
+        {{ $slot }}
+    </main>
+
     <!-- SweetAlert2 CSS & JS -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
