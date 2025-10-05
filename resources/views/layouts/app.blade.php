@@ -13,7 +13,6 @@
 
 <body class="font-sans antialiased bg-gray-200">
     <!-- SweetAlert2 CSS & JS -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             window.addEventListener('swal:confirm', event => {
@@ -57,7 +56,7 @@
         });
     </script>
     @livewireScripts
-
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <!-- Navbar -->
     <nav class="bg-white shadow" x-data="{ mobileMenuOpen: false }">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

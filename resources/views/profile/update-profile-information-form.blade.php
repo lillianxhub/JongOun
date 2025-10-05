@@ -8,6 +8,7 @@
     </x-slot>
 
     <x-slot name="form">
+        
         <!-- Profile Photo -->
         @if (Laravel\Jetstream\Jetstream::managesProfilePhotos())
             <div x-data="{photoName: null, photoPreview: null}" class="col-span-6 sm:col-span-4">
@@ -84,9 +85,9 @@
     </x-slot>
 
     <x-slot name="actions">
-        <x-action-message class="me-3" on="saved">
+        {{-- <x-action-message class="me-3" on="saved">
             {{ __('Saved.') }}
-        </x-action-message>
+        </x-action-message> --}}
 
         <x-button wire:loading.attr="disabled" wire:target="photo">
             {{ __('Save') }}

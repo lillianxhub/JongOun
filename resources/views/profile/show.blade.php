@@ -6,21 +6,7 @@
     </x-slot>
 
     <div>
-        <div>
-        <form action="{{ route('profile.update') }}" method="POST" enctype="multipart/form-data">
-    @csrf
-    @method('PUT')
-
-    <input type="file" name="profile_photo">
-    <button type="submit">Update Profile</button>
-</form>
-
-@if (Auth::user()->profile_photo)
-    <img src="{{ asset('storage/' . Auth::user()->profile_photo) }}" 
-         alt="Profile Photo" width="100">
-@endif
-
-        </div>
+      
         <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
             @if (Laravel\Fortify\Features::canUpdateProfileInformation())
                 @livewire('profile.update-profile-information-form')
