@@ -5,6 +5,7 @@ use App\Models\Booking;
 use App\Http\Controllers\AdminController;
 use App\Livewire\Admin\Bookings;
 use App\Http\Controllers\IndexController;
+use App\Http\Controllers\BookingController;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,10 +32,7 @@ Route::middleware([
         return view('booking');
     })->name('booking');
 
-    Route::get('/profile/bookings', function () {
-        $bookings = Booking::with('room')->where('user_id', auth()->id())->latest()->get();
-        return view('profile.bookings', compact('bookings'));
-    })->name('profile.bookings');
+    Route::get('/profile/bookings', [BookingController::class, 'booking'])->name('profile.bookings');
 
     Route::get('/profile', function () {
         return view('profile.show');
@@ -49,4 +47,5 @@ Route::middleware([
         // Route::get('/rooms', [AdminController::class, 'rooms'])->name('rooms');
         // Route::get('/users', [AdminController::class, 'users'])->name('users');
     });
+
 });
