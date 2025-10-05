@@ -3,7 +3,6 @@
 use Illuminate\Support\Facades\Route;
 use App\Models\Booking;
 use App\Http\Controllers\AdminController;
-use App\Livewire\Admin\Bookings;
 use App\Http\Controllers\IndexController;
 use App\Http\Controllers\BookingController;
 
@@ -37,15 +36,19 @@ Route::middleware([
     Route::get('/profile', function () {
         return view('profile.show');
     })->name('user.profile');
-
+     
     // Admin routes (only accessible to admin users)
     Route::middleware('admin')->prefix('admin')->name('admin.')->group(function () {
         Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
 
         // You can add more admin routes here:
         Route::get('/bookings', [AdminController::class, 'bookings'])->name('bookings');
+        Route::get('/instruments', [AdminController::class, 'instrument'])->name('instruments');
         // Route::get('/rooms', [AdminController::class, 'rooms'])->name('rooms');
         // Route::get('/users', [AdminController::class, 'users'])->name('users');
+       
+
+
     });
 
 });

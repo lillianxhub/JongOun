@@ -14,7 +14,7 @@
     <div class="space-y-8">
         <!-- Bookings Management -->
         <div class="bg-white rounded-lg shadow" id="bookings">
-            <div class="p-6 border-b border-gray-200">
+            {{-- <div class="p-6 border-b border-gray-200">
                 <h3 class="text-lg font-semibold text-gray-800 flex items-center">
                     <svg class="w-5 h-5 mr-2 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -23,7 +23,7 @@
                     </svg>
                     Bookings Management
                 </h3>
-            </div>
+            </div> --}}
             <div class="p-6">
                 @if (class_exists('App\Livewire\Admin\Bookings'))
                     @livewire('admin.bookings')

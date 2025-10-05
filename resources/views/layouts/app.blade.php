@@ -12,8 +12,15 @@
 </head>
 
 <body class="font-sans antialiased bg-gray-200">
+
+    <!-- Navbar Livewire layout -->
+    @include('navigation-menu')
+
+    <main>
+        {{ $slot }}
+    </main>
+
     <!-- SweetAlert2 CSS & JS -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             window.addEventListener('swal:confirm', event => {
@@ -57,96 +64,140 @@
         });
     </script>
     @livewireScripts
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <!-- Navbar -->
-    <nav class="bg-white shadow p-6 flex justify-between">
-        <a href="{{ route('home') }}" class="font-bold text-xl">JongOun</a>
-        <div>
-            @auth
-                @if (auth()->user()->role === 'admin')
-                    {{-- <a href="{{ route('dashboard') }}" class="mr-4 hover:text-blue-600 transition-colors">Dashboard</a>
-                    <a href="{{ route('profile.bookings') }}" class="mr-4 hover:text-blue-600 transition-colors">My
-                        Booking</a>
-                    <a href="{{ route('profile.show') }}" class="mr-4 hover:text-blue-600 transition-colors">Profile</a>
-                    <form method="POST" action="{{ route('logout') }}" class="inline">
-                        @csrf
-                        <button type="submit" class="text-red-500">Logout</button>
-                    </form> --}}
-                    <div class="flex items-center space-x-4">
-                        <a href="{{ route('admin.dashboard') }}" class="hover:text-blue-600 transition-colors">Dashboard</a>
-                        <a href="{{ route('home') }}#service" class="hover:text-blue-500 transition-colors">Service</a>
-                        <a href="{{ route('booking') }}" class="hover:text-blue-500 transition-colors">Booking</a>
-                        <a href="{{ route('home') }}#about" class="hover:text-blue-600 transition-colors">About</a>
+    <nav class="bg-white shadow" x-data="{ mobileMenuOpen: false }">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <a href="{{ route('home') }}" class="font-bold text-xl">JongOun</a>
 
-                        <!-- Profile Dropdown -->
-                        <div x-data="{ open: false }" class="relative inline-flex">
-                            <!-- button -->
-                            <button @click="open = !open"
-                                class="flex items-center space-x-2 bg-black text-white px-4 py-2 rounded shadow hover:bg-gray-800 transition">
-                                <span>{{ Auth::user()->name }}</span>
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                                    stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M19 9l-7 7-7-7" />
-                                </svg>
-                            </button>
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex items-center space-x-4">
+                    @auth
+                        @if (auth()->user()->role === 'admin')
+                            <a href="{{ route('home') }}#service" class="hover:text-blue-500 transition-colors">Service</a>
+                            <a href="{{ route('booking') }}" class="hover:text-blue-500 transition-colors">Booking</a>
+                            <a href="{{ route('home') }}#about" class="hover:text-blue-600 transition-colors">About</a>
 
-                            <!-- menu -->
-                            <div x-show="open" @click.away="open = false"
-                                class="absolute right-0 mt-10 w-48 bg-white border rounded-lg shadow-lg py-2 z-50">
-                                <a href="{{ route('profile.bookings') }}"
-                                    class="block px-4 py-2 text-gray-700 hover:bg-gray-100">My Booking</a>
-                                <a href="{{ route('user.profile') }}"
-                                    class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Profile</a>
-                                <form method="POST" action="{{ route('logout') }}">
-                                    @csrf
-                                    <button type="submit"
-                                        class="w-full text-left px-4 py-2 text-red-500 hover:bg-red-50">Logout</button>
-                                </form>
+                            <!-- Profile Dropdown -->
+                            <div x-data="{ open: false }" class="relative inline-flex">
+                                <button @click="open = !open"
+                                    class="flex items-center space-x-2 bg-black text-white px-4 py-2 rounded shadow hover:bg-gray-800 transition">
+                                    <span>{{ Auth::user()->name }}</span>
+                                    <i class="fas fa-chevron-down"></i>
+                                </button>
+
+                                <div x-show="open" @click.away="open = false"
+                                    class="absolute right-0 mt-12 w-40 bg-white border rounded-lg py-1 shadow-lg z-50">
+                                    <a href="{{ route('admin.dashboard') }}"
+                                        class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Dashboard</a>
+                                    <a href="{{ route('profile.bookings') }}"
+                                        class="block px-4 py-2 text-gray-700 hover:bg-gray-100">My Booking</a>
+                                    <a href="{{ route('user.profile') }}"
+                                        class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Profile</a>
+                                    <form method="POST" action="{{ route('logout') }}">
+                                        @csrf
+                                        <button type="submit"
+                                            class="w-full text-left px-4 py-2 text-red-500 hover:bg-red-50">Logout</button>
+                                    </form>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                @elseif(auth()->user()->role === 'user')
-                    <div class="flex items-center space-x-4">
-                        <a href="{{ route('home') }}#service" class="hover:text-blue-500 transition-colors">Service</a>
-                        <a href="{{ route('booking') }}" class="hover:text-blue-500 transition-colors">Booking</a>
-                        <a href="{{ route('home') }}#about" class="hover:text-blue-600 transition-colors">About</a>
+                        @elseif(auth()->user()->role === 'user')
+                            <a href="{{ route('home') }}#service" class="hover:text-blue-500 transition-colors">Service</a>
+                            <a href="{{ route('booking') }}" class="hover:text-blue-500 transition-colors">Booking</a>
+                            <a href="{{ route('home') }}#about" class="hover:text-blue-600 transition-colors">About</a>
 
-                        <!-- Profile Dropdown -->
-                        <div x-data="{ open: false }" class="relative inline-flex">
-                            <!-- button -->
-                            <button @click="open = !open"
-                                class="flex items-center space-x-2 bg-black text-white px-4 py-2 rounded shadow hover:bg-gray-800 transition">
-                                <span>{{ Auth::user()->name }}</span>
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                                    stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M19 9l-7 7-7-7" />
-                                </svg>
-                            </button>
+                            <!-- Profile Dropdown -->
+                            <div x-data="{ open: false }" class="relative inline-flex">
+                                <button @click="open = !open"
+                                    class="flex items-center space-x-2 bg-black text-white px-4 py-2 rounded shadow hover:bg-gray-800 transition">
+                                    <span>{{ Auth::user()->name }}</span>
+                                    <i class="fas fa-chevron-down"></i>
+                                </button>
 
-                            <!-- menu -->
-                            <div x-show="open" @click.away="open = false"
-                                class="absolute right-0 mt-10 w-48 bg-white border rounded-lg shadow-lg py-2 z-50">
-                                <a href="{{ route('profile.bookings') }}"
-                                    class="block px-4 py-2 text-gray-700 hover:bg-gray-100">My Booking</a>
-                                <a href="{{ route('user.profile') }}"
-                                    class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Profile</a>
-                                <form method="POST" action="{{ route('logout') }}">
-                                    @csrf
-                                    <button type="submit"
-                                        class="w-full text-left px-4 py-2 text-red-500 hover:bg-red-50">Logout</button>
-                                </form>
+                                <div x-show="open" @click.away="open = false"
+                                    class="absolute right-0 mt-12 w-48 bg-white border rounded-lg shadow-lg py-2 z-50">
+                                    <a href="{{ route('profile.bookings') }}"
+                                        class="block px-4 py-2 text-gray-700 hover:bg-gray-100">My Booking</a>
+                                    <a href="{{ route('user.profile') }}"
+                                        class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Profile</a>
+                                    <form method="POST" action="{{ route('logout') }}">
+                                        @csrf
+                                        <button type="submit"
+                                            class="w-full text-left px-4 py-2 text-red-500 hover:bg-red-50">Logout</button>
+                                    </form>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                @endif
-            @else
-                <a href="#service" class="mr-4 hover:text-blue-500 transition-colors">Service</a>
-                <a href="{{ route('booking') }}" class="mr-4 hover:text-blue-500 transition-colors">Booking</a>
-                <a href="#about" class="mr-4 hover:text-blue-500 transition-colors">About</a>
-                <a href="{{ route('login') }}" class="mr-4 hover:text-blue-500 transition-colors">Sign in</a>
-                <!-- <a href="{{ route('register') }}" class="text-blue-500">Register</a> -->
-            @endauth
+                        @endif
+                    @else
+                        <a href="#service" class="hover:text-blue-500 transition-colors">Service</a>
+                        <a href="{{ route('booking') }}" class="hover:text-blue-500 transition-colors">Booking</a>
+                        <a href="#about" class="hover:text-blue-500 transition-colors">About</a>
+                        <a href="{{ route('login') }}" class="hover:text-blue-500 transition-colors">Sign in</a>
+                    @endauth
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <button @click="mobileMenuOpen = !mobileMenuOpen" class="md:hidden p-2 rounded-md hover:bg-gray-100">
+                    <i class="fas fa-bars text-xl" x-show="!mobileMenuOpen"></i>
+                    <i class="fas fa-times text-xl" x-show="mobileMenuOpen"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div x-show="mobileMenuOpen" x-transition:enter="transition ease-out duration-200"
+            x-transition:enter-start="opacity-0 transform scale-95"
+            x-transition:enter-end="opacity-100 transform scale-100"
+            x-transition:leave="transition ease-in duration-150"
+            x-transition:leave-start="opacity-100 transform scale-100"
+            x-transition:leave-end="opacity-0 transform scale-95" class="md:hidden border-t">
+            <div class="px-2 pt-2 pb-3 space-y-1">
+                @auth
+                    @if (auth()->user()->role === 'admin')
+                        <a href="{{ route('home') }}#service"
+                            class="block px-3 py-2 rounded-md hover:bg-gray-100">Service</a>
+                        <a href="{{ route('booking') }}" class="block px-3 py-2 rounded-md hover:bg-gray-100">Booking</a>
+                        <a href="{{ route('home') }}#about" class="block px-3 py-2 rounded-md hover:bg-gray-100">About</a>
+                        <div class="border-t my-2"></div>
+                        <div class="px-3 py-2 text-sm font-semibold text-gray-700">{{ Auth::user()->name }}</div>
+                        <a href="{{ route('admin.dashboard') }}"
+                            class="block px-3 py-2 rounded-md hover:bg-gray-100">Dashboard</a>
+                        <a href="{{ route('profile.bookings') }}" class="block px-3 py-2 rounded-md hover:bg-gray-100">My
+                            Booking</a>
+                        <a href="{{ route('user.profile') }}"
+                            class="block px-3 py-2 rounded-md hover:bg-gray-100">Profile</a>
+                        <form method="POST" action="{{ route('logout') }}">
+                            @csrf
+                            <button type="submit"
+                                class="w-full text-left px-3 py-2 rounded-md text-red-500 hover:bg-red-50">Logout</button>
+                        </form>
+                    @elseif(auth()->user()->role === 'user')
+                        <a href="{{ route('home') }}#service"
+                            class="block px-3 py-2 rounded-md hover:bg-gray-100">Service</a>
+                        <a href="{{ route('booking') }}" class="block px-3 py-2 rounded-md hover:bg-gray-100">Booking</a>
+                        <a href="{{ route('home') }}#about"
+                            class="block px-3 py-2 rounded-md hover:bg-gray-100">About</a>
+                        <div class="border-t my-2"></div>
+                        <div class="px-3 py-2 text-sm font-semibold text-gray-700">{{ Auth::user()->name }}</div>
+                        <a href="{{ route('profile.bookings') }}" class="block px-3 py-2 rounded-md hover:bg-gray-100">My
+                            Booking</a>
+                        <a href="{{ route('user.profile') }}"
+                            class="block px-3 py-2 rounded-md hover:bg-gray-100">Profile</a>
+                        <form method="POST" action="{{ route('logout') }}">
+                            @csrf
+                            <button type="submit"
+                                class="w-full text-left px-3 py-2 rounded-md text-red-500 hover:bg-red-50">Logout</button>
+                        </form>
+                    @endif
+                @else
+                    <a href="#service" class="block px-3 py-2 rounded-md hover:bg-gray-100">Service</a>
+                    <a href="{{ route('booking') }}" class="block px-3 py-2 rounded-md hover:bg-gray-100">Booking</a>
+                    <a href="#about" class="block px-3 py-2 rounded-md hover:bg-gray-100">About</a>
+                    <a href="{{ route('login') }}" class="block px-3 py-2 rounded-md hover:bg-gray-100">Sign in</a>
+                @endauth
+            </div>
         </div>
     </nav>
 

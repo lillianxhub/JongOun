@@ -77,6 +77,9 @@ class BookingStepper extends Component
     public $selectedDate = null;
     public $calendarDays = [];
 
+    public $errorType = null;
+    public $errorInstrumentId = null;
+
     public function mount()
     {
         $now = now();
@@ -270,9 +273,18 @@ class BookingStepper extends Component
         }
     }
 
-
     public function addInstrument($id)
     {
+        $instrument = $this->instruments->find($id);
+        if (!$instrument) {
+            return;
+        }
+
+        if ($instrument->stock <= 0) {
+            $this->addError('booking', "No stock available for {$instrument->name}");
+            return;
+        }
+
         $this->selectedInstruments[$id] = 1;
         $this->calculatePrice();
     }
@@ -285,7 +297,17 @@ class BookingStepper extends Component
 
     public function increaseInstrument($id)
     {
-        $this->selectedInstruments[$id]++;
+        $instrument = $this->instruments->find($id);
+        if (!$instrument) {
+            return;
+        }
+
+        if ($this->selectedInstruments[$id] < $instrument->stock) {
+            $this->selectedInstruments[$id]++;
+        } else {
+            $this->addError('booking', "No more stock available for {$instrument->name}");
+        }
+
         $this->calculatePrice();
     }
 
@@ -515,6 +537,16 @@ class BookingStepper extends Component
         $this->nextStep();
     }
 
+    public function updated($propertyName)
+    {
+        $this->validateOnly($propertyName, [
+            'name' => 'required|string|min:2|max:255',
+            'email' => 'required|email',
+            'phone' => 'required|regex:/^([0-9\s\-\+\(\)]*)$/|min:10',
+            'members' => 'required|integer|min:1',
+        ]);
+    }
+
     public function getIsFormValidProperty()
     {
         return !empty($this->name) &&
@@ -588,6 +620,7 @@ class BookingStepper extends Component
             ->first();
 
         if ($conflictingBooking) {
+            $this->errorType = 'time_conflict';
             $this->addError('booking', 'This time slot is no longer available. Please select another time.');
             return;
         }
@@ -596,10 +629,14 @@ class BookingStepper extends Component
         foreach ($this->selectedInstruments as $id => $quantity) {
             $instrument = Instrument::find($id);
             if (!$instrument) {
+                $this->errorType = 'invalid_instrument';
+                $this->errorInstrumentId = $id;
                 $this->addError('booking', "Invalid instrument selected.");
                 return;
             }
             if ($instrument->stock < $quantity) {
+                $this->errorType = 'insufficient_stock';
+                $this->errorInstrumentId = $id;
                 $this->addError('booking', "Not enough {$instrument->name} available. Only {$instrument->stock} left.");
                 return;
             }
@@ -665,6 +702,15 @@ class BookingStepper extends Component
 
             ]);
         }
+    }
+
+    public function removeInstrumentError($id)
+    {
+        unset($this->selectedInstruments[$id]);
+        $this->calculatePrice();
+        $this->errorType = null;
+        $this->errorInstrumentId = null;
+        $this->resetErrorBag('booking');
     }
 
     public function render()
