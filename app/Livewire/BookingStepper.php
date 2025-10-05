@@ -679,9 +679,6 @@ class BookingStepper extends Component
                     'quantity' => $quantity,
                     'price' => $instrument->price * $quantity
                 ]);
-
-                // update stock
-                $instrument->decrement('stock', $quantity);
             }
 
             session()->flash('message', 'Booking successful!');
