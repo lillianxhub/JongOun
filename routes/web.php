@@ -3,7 +3,6 @@
 use Illuminate\Support\Facades\Route;
 use App\Models\Booking;
 use App\Http\Controllers\AdminController;
-use App\Livewire\Admin\Bookings;
 use App\Http\Controllers\IndexController;
 
 /*

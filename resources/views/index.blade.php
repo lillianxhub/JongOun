@@ -14,17 +14,18 @@
             @foreach ($RoomTypes as $index => $RoomType)
                 <div
                     class="flex flex-col md:flex-row items-center bg-gray-100 rounded-xl shadow p-6 {{ $index % 2 == 1 ? 'md:flex-row-reverse' : '' }}">
+                    <div class="flex-1 flex justify-center mt-4 md:mt-0">
+                        <img src="{{ asset('images/rooms/' . $RoomType->image) }}" alt="{{ $RoomType->name }}"
+                            class="w-100 h-52 object-cover rounded-lg shadow-md">
+                    </div>
                     <div class="flex-1 text-center md:text-left">
                         <h3 class="font-bold text-2xl mb-2">{{ $RoomType->name }}</h3>
                         <p class="mb-1">Capacity: {{ $RoomType->max_capacity }}</p>
                         <p class="mb-4">{{ $RoomType->detail }}</p>
                         <a href="{{ route('booking') }}"
-                            class="bg-black hover:bg-gray-800 text-white font-semibold px-4 py-2 rounded shadow transition">Book
-                            Now</a>
-                    </div>
-                    <div class="flex-1 flex justify-center mt-4 md:mt-0">
-                        <img src="{{ asset('images/rooms/' . $RoomType->image) }}" alt="{{ $RoomType->name }}"
-                            class="w-100 h-52 object-cover rounded-lg shadow-md">
+                            class="bg-black hover:bg-gray-800 text-white font-semibold px-4 py-2 rounded shadow transition">
+                            Book Now
+                        </a>
                     </div>
                 </div>
             @endforeach
