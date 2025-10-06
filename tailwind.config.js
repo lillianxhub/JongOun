@@ -19,7 +19,7 @@ export default {
             colors: {
                 primary: "#ff6b35", // สีส้มหลัก
                 secondary: "#f7931e", // สีส้มอ่อน
-                accent: "#10B981", // สีเขียว
+                accent: "#5cb85c", // สีเขียว
                 neutral: "#ccc", // สีตัวอักษร/พื้นหลังอ่อน
                 dark: "#1a1a1a", // สีพื้นหลังเข้ม
                 dark2: "#2d1810", // สี gradient background
@@ -34,7 +34,7 @@ export default {
                 "btn-gradient":
                     "linear-gradient(135deg, #ff6b35 0%, #f7931e 100%)",
                 "btn-gradient-accent":
-                    "linear-gradient(135deg, #10B981 0%, #22c55e 100%)",
+                    "linear-gradient(135deg, #3bb189ff 50%, #22c55e 100%)",
             },
         },
     },

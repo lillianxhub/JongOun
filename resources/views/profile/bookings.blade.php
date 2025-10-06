@@ -1,7 +1,7 @@
 <x-app-layout>
     <div class="container mx-auto py-10">
         <div class="flex items-center justify-between mb-8">
-            <h1 class="text-3xl font-bold">My Bookings</h1>
+            <h1 class="text-3xl text-white font-bold">My Bookings</h1>
             <a href="{{ route('booking') }}"
                 class="bg-black hover:bg-green-500 text-white font-semibold px-4 py-2 rounded shadow transition">
                 Add Booking
