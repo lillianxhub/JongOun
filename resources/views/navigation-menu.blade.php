@@ -16,9 +16,11 @@
                             <!-- Profile Dropdown -->
                             <div x-data="{ open: false }" class="relative inline-flex">
                                 <button @click="open = !open"
-                                    class="flex items-center space-x-2 bg-black text-white px-4 py-2 rounded shadow hover:bg-gray-800 transition">
-                                    <span>{{ Auth::user()->name }}</span>
-                                    <i class="fas fa-chevron-down"></i>
+                                    class="flex items-center space-x-2 bg-tranparent text-white px-4 py-2 rounded">
+                                    <img src="{{ Auth::user()->profile_photo_url }}" alt="{{ Auth::user()->name }}"
+                                        class="rounded-full h-10 w-10 object-cover">
+                                    {{-- <span>{{ Auth::user()->name }}</span> --}}
+                                    {{-- <i class="fas fa-chevron-down"></i> --}}
                                 </button>
 
                                 <div x-show="open" @click.away="open = false"
@@ -44,13 +46,15 @@
                             <!-- Profile Dropdown -->
                             <div x-data="{ open: false }" class="relative inline-flex">
                                 <button @click="open = !open"
-                                    class="flex items-center space-x-2 bg-black text-white px-4 py-2 rounded shadow hover:bg-gray-800 transition">
-                                    <span>{{ Auth::user()->name }}</span>
-                                    <i class="fas fa-chevron-down"></i>
+                                    class="flex items-center space-x-2 bg-tranparent text-white px-4 py-2 rounded">
+                                    <img src="{{ Auth::user()->profile_photo_url }}" alt="{{ Auth::user()->name }}"
+                                        class="rounded-full h-10 w-10 object-cover">
+                                    {{-- <span>{{ Auth::user()->name }}</span> --}}
+                                    {{-- <i class="fas fa-chevron-down"></i> --}}
                                 </button>
 
                                 <div x-show="open" @click.away="open = false"
-                                    class="absolute right-0 mt-12 w-48 bg-white border rounded-lg shadow-lg py-2 z-50">
+                                    class="absolute right-0 mt-10 w-48 bg-white border rounded-lg shadow-lg py-2 z-50">
                                     <a href="{{ route('profile.bookings') }}"
                                         class="block px-4 py-2 text-gray-700 hover:bg-gray-100">My Booking</a>
                                     <a href="{{ route('user.profile') }}"
@@ -110,7 +114,8 @@
                         <a href="{{ route('home') }}#service"
                             class="block px-3 py-2 rounded-md hover:bg-gray-100">Service</a>
                         <a href="{{ route('booking') }}" class="block px-3 py-2 rounded-md hover:bg-gray-100">Booking</a>
-                        <a href="{{ route('home') }}#about" class="block px-3 py-2 rounded-md hover:bg-gray-100">About</a>
+                        <a href="{{ route('home') }}#about"
+                            class="block px-3 py-2 rounded-md hover:bg-gray-100">About</a>
                         <div class="border-t my-2"></div>
                         <div class="px-3 py-2 text-sm font-semibold text-gray-700">{{ Auth::user()->name }}</div>
                         <a href="{{ route('profile.bookings') }}" class="block px-3 py-2 rounded-md hover:bg-gray-100">My
