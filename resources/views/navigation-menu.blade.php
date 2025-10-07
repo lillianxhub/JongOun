@@ -1,5 +1,5 @@
     <!-- Navbar -->
-    <nav class="bg-dark w-full shadow-md" x-data="{ mobileMenuOpen: false }">
+    <nav class="bg-black w-full shadow-md" x-data="{ mobileMenuOpen: false }">
         <div class="px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
                 <!-- Logo -->
