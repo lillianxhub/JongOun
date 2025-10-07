@@ -169,12 +169,12 @@ class Bookings extends Component
                 }
             }
 
-            $booking->update(['status' => 'canceled']);
+            $booking->update(['status' => 'cancelled']);
             $this->loadStats();
 
             $this->dispatch('swal:success', [
-                'title' => 'Canceled!',
-                'text' => 'Booking canceled successfully',
+                'title' => 'Cancelled!',
+                'text' => 'Booking cancelled successfully',
                 'icon' => 'error',
                 'color' => 'red',
             ]);

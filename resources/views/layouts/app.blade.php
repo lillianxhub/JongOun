@@ -11,7 +11,7 @@
     @livewireStyles
 </head>
 
-<body class="font-sans antialiased bg-gray-200">
+<body class="font-sans antialiased bg-hero-gradient min-h-screen">
 
     <!-- Navbar Livewire layout -->
     @include('navigation-menu')
