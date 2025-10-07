@@ -164,9 +164,11 @@
                         <div class="flex items-center space-x-4">
                             <span class="text-gray-600">Welcome, {{ Auth::user()->name }}</span>
                             <div class="w-8 h-8 bg-gray-400 rounded-full flex items-center justify-center">
-                                <span class="text-white text-sm font-medium">
+                                {{-- <span class="text-white text-sm font-medium">
                                     {{ substr(Auth::user()->name, 0, 1) }}
-                                </span>
+                                </span> --}}
+                                <img src="{{ Auth::user()->profile_photo_url }}" alt="{{ Auth::user()->name }}"
+                                    class="rounded-full">
                             </div>
                         </div>
                     </div>

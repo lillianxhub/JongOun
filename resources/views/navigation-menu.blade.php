@@ -15,10 +15,17 @@
 
                             <!-- Profile Dropdown -->
                             <div x-data="{ open: false }" class="relative inline-flex">
-                                <button @click="open = !open"
+                                <button @click="open = !open" <<<<<<< HEAD
                                     class="flex items-center space-x-2 bg-primary text-white px-4 py-2 rounded-full shadow hover:bg-secondary transition">
                                     <span>{{ Auth::user()->name }}</span>
                                     <i class="fas fa-chevron-down"></i>
+                                    =======
+                                    class="flex items-center space-x-2 bg-tranparent text-white px-4 py-2 rounded">
+                                    <img src="{{ Auth::user()->profile_photo_url }}" alt="{{ Auth::user()->name }}"
+                                        class="rounded-full h-10 w-10 object-cover">
+                                    {{-- <span>{{ Auth::user()->name }}</span> --}}
+                                    {{-- <i class="fas fa-chevron-down"></i> --}}
+                                    >>>>>>> dev
                                 </button>
                                 <div x-show="open" @click.away="open = false"
                                     class="absolute right-0 top-9 mt-2 w-48 bg-black rounded-lg shadow-lg py-2 z-50">
@@ -33,7 +40,35 @@
                                     <form method="POST" action="{{ route('logout') }}">
                                         @csrf
                                         <button type="submit"
-                                            class="w-full text-left px-4 py-2 text-red-500 hover:bg-red-900">Logout</button>
+                                            class="w-full text-left px-4 py-2 text-red-500 hover:bg-red-50">Logout</button>
+                                    </form>
+                                </div>
+                            </div>
+                        @elseif(auth()->user()->role === 'user')
+                            <a href="{{ route('home') }}#service" class="hover:text-blue-500 transition-colors">Service</a>
+                            <a href="{{ route('booking') }}" class="hover:text-blue-500 transition-colors">Booking</a>
+                            <a href="{{ route('home') }}#about" class="hover:text-blue-600 transition-colors">About</a>
+
+                            <!-- Profile Dropdown -->
+                            <div x-data="{ open: false }" class="relative inline-flex">
+                                <button @click="open = !open"
+                                    class="flex items-center space-x-2 bg-tranparent text-white px-4 py-2 rounded">
+                                    <img src="{{ Auth::user()->profile_photo_url }}" alt="{{ Auth::user()->name }}"
+                                        class="rounded-full h-10 w-10 object-cover">
+                                    {{-- <span>{{ Auth::user()->name }}</span> --}}
+                                    {{-- <i class="fas fa-chevron-down"></i> --}}
+                                </button>
+
+                                <div x-show="open" @click.away="open = false"
+                                    class="absolute right-0 mt-10 w-48 bg-white border rounded-lg shadow-lg py-2 z-50">
+                                    <a href="{{ route('profile.bookings') }}"
+                                        class="block px-4 py-2 text-gray-700 hover:bg-gray-100">My Booking</a>
+                                    <a href="{{ route('user.profile') }}"
+                                        class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Profile</a>
+                                    <form method="POST" action="{{ route('logout') }}">
+                                        @csrf
+                                        <button type="submit"
+                                            class="w-full text-left px-4 py-2 text-red-500 hover:bg-red-50">Logout</button>
                                     </form>
                                 </div>
                             </div>
@@ -86,8 +121,28 @@
                             class="block px-3 py-2 rounded-md text-white hover:bg-primary hover:text-white transition">Profile</a>
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
-                            <button type="submit"
+                            <button type="submit" <<<<<<< HEAD
                                 class="w-full text-left px-3 py-2 rounded-md text-red-500 hover:bg-red-50 transition">Logout</button>
+                            =======
+                            class="w-full text-left px-3 py-2 rounded-md text-red-500 hover:bg-red-50">Logout</button>
+                        </form>
+                    @elseif(auth()->user()->role === 'user')
+                        <a href="{{ route('home') }}#service"
+                            class="block px-3 py-2 rounded-md hover:bg-gray-100">Service</a>
+                        <a href="{{ route('booking') }}" class="block px-3 py-2 rounded-md hover:bg-gray-100">Booking</a>
+                        <a href="{{ route('home') }}#about"
+                            class="block px-3 py-2 rounded-md hover:bg-gray-100">About</a>
+                        <div class="border-t my-2"></div>
+                        <div class="px-3 py-2 text-sm font-semibold text-gray-700">{{ Auth::user()->name }}</div>
+                        <a href="{{ route('profile.bookings') }}" class="block px-3 py-2 rounded-md hover:bg-gray-100">My
+                            Booking</a>
+                        <a href="{{ route('user.profile') }}"
+                            class="block px-3 py-2 rounded-md hover:bg-gray-100">Profile</a>
+                        <form method="POST" action="{{ route('logout') }}">
+                            @csrf
+                            <button type="submit"
+                                class="w-full text-left px-3 py-2 rounded-md text-red-500 hover:bg-red-50">Logout</button>
+                            >>>>>>> dev
                         </form>
                     @endif
                 @else
