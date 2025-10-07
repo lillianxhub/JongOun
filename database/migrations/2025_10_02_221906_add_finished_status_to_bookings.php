@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::table('bookings', function (Blueprint $table) {
             //
-            DB::statement("ALTER TABLE bookings MODIFY COLUMN status ENUM('pending', 'approved', 'canceled', 'finished') NOT NULL DEFAULT 'pending'");
+            DB::statement("ALTER TABLE bookings MODIFY COLUMN status ENUM('pending', 'approved', 'cancelled', 'finished') NOT NULL DEFAULT 'pending'");
         });
     }
 
@@ -24,7 +24,7 @@ return new class extends Migration
     {
         Schema::table('bookings', function (Blueprint $table) {
             //
-            DB::statement("ALTER TABLE bookings MODIFY COLUMN status ENUM('pending', 'approved', 'canceled') NOT NULL DEFAULT 'pending'");
+            DB::statement("ALTER TABLE bookings MODIFY COLUMN status ENUM('pending', 'approved', 'cancelled') NOT NULL DEFAULT 'pending'");
         });
     }
 };

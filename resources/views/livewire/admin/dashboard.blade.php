@@ -97,7 +97,7 @@
                                     </p>
                                     <span
                                         class="inline-flex items-center px-2 py-1 text-xs font-medium rounded-full
-                                        {{ $booking->status === 'approved' ? 'bg-green-100 text-green-700' : ($booking->status === 'canceled' ? 'bg-red-100 text-red-700' : ($booking->status === 'finished' ? 'bg-gray-100 text-gray-700' : 'bg-yellow-100 text-yellow-700')) }}">
+                                        {{ $booking->status === 'approved' ? 'bg-green-100 text-green-700' : ($booking->status === 'cancelled' ? 'bg-red-100 text-red-700' : ($booking->status === 'finished' ? 'bg-gray-100 text-gray-700' : 'bg-yellow-100 text-yellow-700')) }}">
                                         <i class="fas fa-circle mr-1 text-xs"></i>
                                         {{ ucfirst($booking->status ?? 'unknown') }}
                                     </span>

@@ -16,31 +16,26 @@
                             <!-- Profile Dropdown -->
                             <div x-data="{ open: false }" class="relative inline-flex">
                                 <button @click="open = !open" <<<<<<< HEAD
-                                    class="flex items-center space-x-2 bg-primary text-white px-4 py-2 rounded-full shadow hover:bg-secondary transition">
-                                    <span>{{ Auth::user()->name }}</span>
-                                    <i class="fas fa-chevron-down"></i>
-                                    =======
-                                    class="flex items-center space-x-2 bg-tranparent text-white px-4 py-2 rounded">
+                                    class="flex items-center space-x-2 bg-tranparent text-white px-4 py-2 rounded-full shadow transition">
                                     <img src="{{ Auth::user()->profile_photo_url }}" alt="{{ Auth::user()->name }}"
                                         class="rounded-full h-10 w-10 object-cover">
                                     {{-- <span>{{ Auth::user()->name }}</span> --}}
                                     {{-- <i class="fas fa-chevron-down"></i> --}}
-                                    >>>>>>> dev
                                 </button>
                                 <div x-show="open" @click.away="open = false"
-                                    class="absolute right-0 top-9 mt-2 w-48 bg-black rounded-lg shadow-lg py-2 z-50">
+                                    class="absolute right-0 top-10 mt-2 w-48 bg-dark rounded-lg shadow-lg py-2 z-50">
                                     @if (auth()->user()->role === 'admin')
                                         <a href="{{ route('admin.dashboard') }}"
-                                            class="block px-4 py-2 text-white hover:bg-gray-800">Dashboard</a>
+                                            class="block px-4 py-2 text-white hover:bg-black">Dashboard</a>
                                     @endif
                                     <a href="{{ route('profile.bookings') }}"
-                                        class="block px-4 py-2 text-white hover:bg-gray-800">My Booking</a>
+                                        class="block px-4 py-2 text-white hover:bg-black">My Booking</a>
                                     <a href="{{ route('user.profile') }}"
-                                        class="block px-4 py-2 text-white hover:bg-gray-800">Profile</a>
+                                        class="block px-4 py-2 text-white hover:bg-black">Profile</a>
                                     <form method="POST" action="{{ route('logout') }}">
                                         @csrf
                                         <button type="submit"
-                                            class="w-full text-left px-4 py-2 text-red-500 hover:bg-red-50">Logout</button>
+                                            class="w-full text-left px-4 py-2 text-red-400 hover:bg-red-900">Logout</button>
                                     </form>
                                 </div>
                             </div>
