@@ -16,15 +16,17 @@ RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
+# Copy everything except ignored (add .dockerignore)
 COPY . .
 
 # Create storage folders & set permissions
-RUN mkdir -p storage/app/livewire-tmp \
-    && mkdir -p bootstrap/cache \
+RUN mkdir -p storage/app/livewire-tmp bootstrap/cache \
     && chown -R www-data:www-data storage bootstrap/cache \
     && chmod -R 775 storage bootstrap/cache
 
-# Set permissions for Laravel
+# Set permissions for Laravel (whole app)
 RUN chown -R www-data:www-data /var/www \
-    && chmod -R 755 /var/www/storage \
-    && chmod -R 755 /var/www/bootstrap/cache
+    && chmod -R 775 /var/www/storage /var/www/bootstrap/cache
+
+# Optional: create symbolic link for storage
+RUN php artisan storage:link || true
