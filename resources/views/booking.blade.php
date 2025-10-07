@@ -1,11 +1,11 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+    {{-- <x-slot name="header">
+        <h2 class="font-semibold text-xl text-white leading-tight">
             Booking
         </h2>
-    </x-slot>
+    </x-slot> --}}
 
-    <div class="container mx-auto mt-10">
+    <div class="mx-auto mt-40">
         @livewire('booking-stepper')
     </div>
 </x-app-layout>

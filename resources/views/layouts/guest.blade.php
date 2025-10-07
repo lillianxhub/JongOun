@@ -19,7 +19,7 @@
     @livewireStyles
 </head>
 
-<body class="bg-gray-100">
+<body class="bg-hero-gradient">
     <div class="font-sans text-gray-900 antialiased">
         {{ $slot }}
     </div>

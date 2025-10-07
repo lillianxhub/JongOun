@@ -43,7 +43,7 @@
                     <option value="">🔄 All Status</option>
                     <option value="pending">⏳ Pending</option>
                     <option value="approved">✅ Approved</option>
-                    <option value="canceled">❌ Canceled</option>
+                    <option value="cancelled">❌ Cancelled</option>
                     <option value="finished">⚠️ Finished</option>
                 </select>
                 <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
@@ -166,7 +166,7 @@
                                 class="px-2 py-1 rounded-full text-xs font-medium
                                     {{ $booking->status === 'approved'
                                         ? 'bg-green-100 text-green-700'
-                                        : ($booking->status === 'canceled'
+                                        : ($booking->status === 'cancelled'
                                             ? 'bg-red-100 text-red-700'
                                             : ($booking->status === 'finished'
                                                 ? 'bg-gray-100 text-gray-700'
@@ -199,7 +199,7 @@
                                 @break
 
                                 @case('finished')
-                                @case('canceled')
+                                @case('cancelled')
                                     <span class="text-gray-500 italic">No actions</span>
                                 @break
                             @endswitch
@@ -322,7 +322,7 @@
                                         class="px-2 py-1 rounded-full text-xs font-medium
                                     {{ $selectedBooking->status === 'approved'
                                         ? 'bg-green-100 text-green-700'
-                                        : ($selectedBooking->status === 'canceled'
+                                        : ($selectedBooking->status === 'cancelled'
                                             ? 'bg-red-100 text-red-700'
                                             : 'bg-yellow-100 text-yellow-700') }}">
                                         {{ ucfirst($selectedBooking->status) }}
