@@ -67,31 +67,29 @@
 
                                     $isSelected = $selectedDate == $dayDate->format('Y-m-d');
 
-                                    // เช็คว่าปุ่มควร disable หรือไม่
                                     $isDisabled = $dayDate < $currentDate;
 
-                                    // กำหนด class
                                     if ($isSelected) {
                                         $btnClass = 'bg-btn-gradient-accent text-white border-white border';
                                         $isDisabled = false;
                                     } elseif (!$day['other']) {
-                                        // เดือนปัจจุบัน
+                                        // current month
                                         $btnClass =
                                             $dayDate < $currentDate
                                                 ? 'bg-white/5 opacity-50 text-white'
                                                 : 'bg-white/10 text-white hover:bg-btn-gradient hover:border-white hover:border';
                                     } else {
-                                        // เดือนอื่น
+                                        // Other month
                                         $btnClass =
                                             $dayDate < $currentDate
                                                 ? 'bg-white/5 opacity-50 text-white'
                                                 : 'bg-white/20 text-white hover:bg-btn-gradient hover:border-white hover:border';
                                     }
 
-                                    // เพิ่มคลาสสำหรับวันที่เลือก
+                                    // Add Class
                                     if ($isSelected) {
                                         $btnClass = 'bg-btn-gradient-accent text-white border-white border';
-                                        $isDisabled = false; // วันที่เลือกต้อง clickable
+                                        $isDisabled = false;
                                     }
                                 @endphp
 
@@ -124,9 +122,6 @@
             <div class="grid grid-cols-1 lg:grid-cols-[40%_55%] gap-4 lg:gap-6">
                 <div class="mb-4">
                     <div class="mb-5 relative">
-                        {{-- <label for="roomType" class="block mb-2 font-semibold text-sm md:text-base text-white">
-                            Select Room Type:
-                        </label> --}}
                         <select id="roomType" wire:model="selectedTypeId"
                             wire:change="selectRoomType($event.target.value)"
                             class="appearance-none w-full bg-white/15 text-white font-medium rounded-lg py-5 px-4 pr-10 shadow-sm focus:outline-none focus:ring-2 focus:ring-white">
@@ -181,36 +176,6 @@
                             <h3 class="text-xl text-primary font-bold">{{ $selectedType->name }} Room -
                                 {{ $selectedRoom->name }}</h3>
                             <p class="text-sm text-gray-400">{{ $selectedType->detail }}</p>
-                            {{-- <div class="flex flex-wrap gap-2 md:gap-3">
-                                <!-- Room -->
-                                <div
-                                    class="inline-flex items-center border rounded-lg overflow-hidden bg-gray-100 text-xs md:text-base">
-                                    <span class="px-2 md:px-3 py-1">Room</span>
-                                    <span class="bg-gray-700 text-white px-2 md:px-3 py-1 font-semibold">
-                                        {{ $selectedRoom->name }}
-                                    </span>
-                                </div>
-
-                                <!-- Capacity -->
-                                <div
-                                    class="inline-flex items-center border rounded-lg overflow-hidden bg-gray-100 text-xs md:text-base">
-                                    <span class="px-2 md:px-3 py-1">Capacity</span>
-                                    <span
-                                        class="bg-gray-700 text-white px-2 md:px-3 py-1 font-semibold flex items-center gap-1">
-                                        {{ $selectedRoom->capacity ?? '-' }}
-                                        <i class="fa-solid fa-user"></i>
-                                    </span>
-                                </div>
-
-                                <!-- Price -->
-                                <div
-                                    class="inline-flex items-center border rounded-lg overflow-hidden bg-gray-100 text-xs md:text-base">
-                                    <span class="px-2 md:px-3 py-1">Price</span>
-                                    <span class="bg-gray-700 text-white px-2 md:px-3 py-1 font-semibold">
-                                        ฿ {{ number_format($selectedRoom->price, 2) }}
-                                    </span>
-                                </div>
-                            </div> --}}
                             <p>
                                 @php
                                     $instruments = is_array($selectedRoom->instruments)
@@ -242,13 +207,10 @@
                                         ($time <= now()->format('H:i') && now()->format('i') > 0);
                                     $isBooked = !$isPastTime && (!$isAvailable || !$hasEndTime);
                                 @endphp
-                                <button wire:click="selectTime('start', '{{ $time }}')"
-                                    @if (!$isAvailable || !$hasEndTime) disabled @endif
+                                <button @disabled(!$isAvailable || !$hasEndTime || $isPastTime)
+                                    @unless ($isAvailable && $hasEndTime && !$isPastTime) wire:click="" @else wire:click="selectTime('start', '{{ $time }}')" @endunless
                                     class="px-2 md:px-3 py-1 rounded text-xs md:text-sm text-white
-                                    @if ($isPastTime) bg-white/20 cursor-not-allowed opacity-50
-                                    @elseif($isBooked) bg-red-500 cursor-not-allowed opacity-50
-                                    @elseif($start_time == $time) bg-btn-gradient-accent
-                                    @else bg-white/15 hover:bg-btn-gradient @endif">
+                                    {{ $isPastTime ? 'bg-white/20 cursor-not-allowed opacity-50' : ($isBooked ? 'bg-red-600 cursor-not-allowed opacity-50' : ($start_time == $time ? 'bg-btn-gradient-accent' : 'bg-white/15 hover:bg-btn-gradient')) }}">
                                     {{ $time }}
                                 </button>
                             @endforeach
@@ -283,7 +245,7 @@
 
                 @if ($selectedRoom && $selectedDate)
                     <div class="items-start mt-2">
-                        <p class="text-xs text-red-400 mt-1">
+                        <p class="text-xs text-red-600 mt-1">
                             <i class="fas fa-lock"></i> = Already booked
                         </p>
                     </div>
@@ -311,8 +273,8 @@
                         $bookedSlots = $this->getBookedTimeSlots();
                     @endphp
                     @if ($bookedSlots->count() > 0)
-                        <div class="mt-4 p-3 bg-red-50 border border-red-200 rounded">
-                            <h5 class="font-semibold text-red-800 mb-2 text-sm md:text-base">Already Booked Times:</h5>
+                        <div class="mt-4 p-3 bg-red-500/20 border border-red-500 rounded">
+                            <h5 class="font-semibold text-red-600 mb-2 text-sm md:text-base">Already Booked Times:</h5>
                             <div class="flex flex-wrap gap-2">
                                 @foreach ($bookedSlots as $slot)
                                     <span class="inline-block bg-red-500 text-white px-2 py-1 rounded text-xs">
@@ -509,7 +471,7 @@
                     </div>
                 </div>
 
-                <div class="w-full lg:w-3/5 h-fit rounded-lg border border-gray-500 bg-black/50 p-5">
+                <div class="w-full lg:w-3/5 h-fit rounded-xl bg-black/20 p-5">
                     @if ($selectedType)
                         <div class="w-full">
                             <img class="w-full h-48 md:h-auto object-cover rounded-xl border border-gray-500"

@@ -9,9 +9,6 @@
 
                 <!-- Header -->
                 <div class="relative">
-                    {{-- <img src="{{ asset('images/rooms/' . $booking->room->roomType->image) }}" alt="Room Image"
-                        class="w-full h-44 object-cover rounded-t-xl"> --}}
-
                     <button wire:click="closeModal"
                         class="absolute top-2 right-2 bg-white/30 text-white rounded-full p-2 hover:bg-black/70 transition flex items-center justify-center">
                         <i class="fas fa-xmark text-xs"></i>
@@ -46,7 +43,7 @@
                             </p>
                         </div>
                         <div class="space-y-0.5 bg-white/10 rounded p-1.5 border border-white/10">
-                            <p class="text-xs">Capacity</p>
+                            <p class="text-xs">Members</p>
                             <p class="font-semibold text-sm">{{ $booking->members }} people</p>
                         </div>
                     </div>

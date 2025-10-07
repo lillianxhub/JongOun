@@ -12,8 +12,10 @@ use Carbon\Carbon;
 
 class BookingStepper extends Component
 {
+    // Current step in the booking stepper (1,2,3)
     public $step = 1;
 
+    // Validation rules for common fields
     protected $rules = [
         'name' => 'required|string|min:2|max:255',
         'email' => 'required|email',
@@ -27,6 +29,7 @@ class BookingStepper extends Component
         'additional_request' => 'nullable|string|max:1000'
     ];
 
+    // Custom error messages
     protected $messages = [
         'name.required' => 'Please enter your name',
         'name.min' => 'Name must be at least 2 characters',
@@ -44,10 +47,18 @@ class BookingStepper extends Component
         'selectedDate.after_or_equal' => 'Please select today or a future date'
     ];
 
-    // Step 1
+    // -----------------------------
+    // Step 1 properties (date / calendar)
+    // -----------------------------
     public $date;
+    public $currentMonth;
+    public $currentYear;
+    public $selectedDate = null;
+    public $calendarDays = [];
 
-    // Step 2
+    // -----------------------------
+    // Step 2 properties (room/time)
+    // -----------------------------
     public $room_id;
     public $start_time;
     public $end_time;
@@ -59,7 +70,9 @@ class BookingStepper extends Component
     public $selectedTime = null;
     public $availableTimes = [];
 
-    // Step 3
+    // -----------------------------
+    // Step 3 properties (customer / instruments)
+    // -----------------------------
     public $name;
     public $email;
     public $phone;
@@ -72,14 +85,13 @@ class BookingStepper extends Component
 
     public $total_price = 0;
 
-    public $currentMonth;
-    public $currentYear;
-    public $selectedDate = null;
-    public $calendarDays = [];
-
     public $errorType = null;
     public $errorInstrumentId = null;
 
+    /** 
+     * Component mount
+     * Initialize calendar, load room types/rooms/instruments and pre-fill user data if logged in
+     */
     public function mount()
     {
         $now = now();
@@ -89,6 +101,7 @@ class BookingStepper extends Component
 
         $this->room_types = RoomType::with('rooms')->get();
         $this->rooms = Room::all();
+
         if (auth()->check()) {
             $this->name = auth()->user()->name;
             $this->email = auth()->user()->email;
@@ -99,6 +112,10 @@ class BookingStepper extends Component
         $this->instruments = Instrument::all();
     }
 
+    /**
+     * Generate calendar structure for currentMonth/currentYear
+     * Produces $calendarDays as array of weeks, each week has 7 day entries
+     */
     public function generateCalendar()
     {
         $firstDayOfMonth = now()->setMonth($this->currentMonth)->setYear($this->currentYear)->startOfMonth();
@@ -106,7 +123,8 @@ class BookingStepper extends Component
         $startDayOfWeek = $firstDayOfMonth->dayOfWeekIso; // 1 (Mon) - 7 (Sun)
         $calendar = [];
         $week = [];
-        // Fill previous month's days
+
+        // Fill previous month's days to align first week
         $prevMonth = $firstDayOfMonth->copy()->subMonth();
         $prevMonthDays = $prevMonth->daysInMonth;
         for ($i = 1; $i < $startDayOfWeek; $i++) {
@@ -117,6 +135,8 @@ class BookingStepper extends Component
                 'other' => true
             ];
         }
+
+        // Fill current month days
         for ($day = 1; $day <= $daysInMonth; $day++) {
             $week[] = [
                 'day' => $day,
@@ -129,7 +149,8 @@ class BookingStepper extends Component
                 $week = [];
             }
         }
-        // Fill next month's days
+
+        // Fill remaining next month days to complete last week
         if (count($week)) {
             $nextMonth = $firstDayOfMonth->copy()->addMonth();
             $nextDay = 1;
@@ -143,9 +164,13 @@ class BookingStepper extends Component
             }
             $calendar[] = $week;
         }
+
         $this->calendarDays = $calendar;
     }
 
+    /**
+     * Go to previous month (not allowed to go before current month/year)
+     */
     public function prevMonth()
     {
         $now = now();
@@ -162,6 +187,9 @@ class BookingStepper extends Component
         $this->generateCalendar();
     }
 
+    /**
+     * Go to next month
+     */
     public function nextMonth()
     {
         if ($this->currentMonth == 12) {
@@ -173,6 +201,9 @@ class BookingStepper extends Component
         $this->generateCalendar();
     }
 
+    /**
+     * Select a day from calendar and move to next step
+     */
     public function selectDay($year, $month, $day)
     {
         $date = now()->setYear($year)->setMonth($month)->setDay($day)->format('Y-m-d');
@@ -181,6 +212,9 @@ class BookingStepper extends Component
         $this->nextStep();
     }
 
+    // ---------------------------
+    // Step navigation
+    // ---------------------------
     public function nextStep()
     {
         // Validate each step before proceeding
@@ -202,13 +236,15 @@ class BookingStepper extends Component
         $this->step--;
     }
 
-    // ตรวจสอบจำนวนสมาชิกแบบ real-time
+    /**
+     * Real-time members validation: ensure members <= room capacity
+     */
     public function updatedMembers($value)
     {
         if ($this->selectedRoom && $value > $this->selectedRoom->capacity) {
             $this->addError('members', "Number of members ({$value}) exceeds room capacity ({$this->selectedRoom->capacity})");
 
-            // แสดง SweetAlert2
+            // Dispatch SweetAlert2 event for client-side display
             $this->dispatch('swal:error', [
                 'title' => 'Invalid Number of Members',
                 'text' => "The room capacity is {$this->selectedRoom->capacity} people, but you entered {$value} members.",
@@ -220,6 +256,9 @@ class BookingStepper extends Component
         }
     }
 
+    /**
+     * Validate step 1 (date selection)
+     */
     protected function validateStep1()
     {
         if (!$this->selectedDate) {
@@ -236,6 +275,9 @@ class BookingStepper extends Component
         return true;
     }
 
+    /**
+     * Validate step 2 (room & times)
+     */
     protected function validateStep2()
     {
         if (!$this->selectedRoom) {
@@ -266,6 +308,9 @@ class BookingStepper extends Component
         return true;
     }
 
+    /**
+     * Jump to specific step (1-3)
+     */
     public function goToStep($step)
     {
         if ($step >= 1 && $step <= 3) {
@@ -273,6 +318,9 @@ class BookingStepper extends Component
         }
     }
 
+    /**
+     * Add an instrument to selection (initial quantity = 1)
+     */
     public function addInstrument($id)
     {
         $instrument = $this->instruments->find($id);
@@ -289,12 +337,18 @@ class BookingStepper extends Component
         $this->calculatePrice();
     }
 
+    /**
+     * Remove instrument from selection
+     */
     public function removeInstrument($id)
     {
         unset($this->selectedInstruments[$id]);
         $this->calculatePrice();
     }
 
+    /**
+     * Increase instrument quantity (bounded by stock)
+     */
     public function increaseInstrument($id)
     {
         $instrument = $this->instruments->find($id);
@@ -311,6 +365,9 @@ class BookingStepper extends Component
         $this->calculatePrice();
     }
 
+    /**
+     * Decrease instrument quantity (remove if reaching zero)
+     */
     public function decreaseInstrument($id)
     {
         if ($this->selectedInstruments[$id] > 1) {
@@ -321,12 +378,19 @@ class BookingStepper extends Component
         $this->calculatePrice();
     }
 
+    /**
+     * Calculate total price based on room hours and instruments
+     */
     public function calculatePrice()
     {
+        // Reset before calculation to avoid accumulation
+        $this->total_price = 0;
+
         if ($this->room_id && $this->start_time && $this->end_time) {
             $room = Room::find($this->room_id);
             $hours = (strtotime($this->end_time) - strtotime($this->start_time)) / 3600;
 
+            // Ensure at least 1 hour pricing
             $this->total_price = $room->price * max($hours, 1);
         }
 
@@ -339,10 +403,14 @@ class BookingStepper extends Component
         }
     }
 
+    /**
+     * Select a room type and reset dependent selections
+     */
     public function selectRoomType($typeId)
     {
         $this->selectedTypeId = $typeId;
         $this->selectedType = RoomType::with('rooms')->find($typeId);
+
         // Reset room selection when type changes
         $this->selectedRoom = null;
         $this->start_time = null;
@@ -350,6 +418,9 @@ class BookingStepper extends Component
         $this->availableTimes = [];
     }
 
+    /**
+     * Select a specific room and load its available times
+     */
     public function selectRoom($roomId)
     {
         $this->selectedRoom = Room::find($roomId);
@@ -362,6 +433,9 @@ class BookingStepper extends Component
         $this->end_time = null;
     }
 
+    /**
+     * Check if the room has any available start time (used for UI availability)
+     */
     public function isRoomAvailable(Room $room)
     {
         if (!$this->selectedDate) return true;
@@ -377,9 +451,9 @@ class BookingStepper extends Component
         return false;
     }
 
-
     /**
      * Check if a time slot is available for booking
+     * Prevent overlaps with existing bookings
      */
     public function isTimeSlotAvailable($startTime, $endTime, $roomId = null, $date = null)
     {
@@ -445,7 +519,7 @@ class BookingStepper extends Component
         $bookedSlots = $this->getBookedTimeSlots();
 
         foreach ($bookedSlots as $slot) {
-            // Check if the selected time falls within any booked slot
+            // If selected start time falls inside any booked slot, it's not available
             if ($time >= $slot->start_time && $time < $slot->end_time) {
                 return false;
             }
@@ -468,33 +542,38 @@ class BookingStepper extends Component
             return false;
         }
 
-        // Check if the time slot from start_time to this end time is available
+        // Validate the entire time range using isTimeSlotAvailable
         return $this->isTimeSlotAvailable($this->start_time, $time);
     }
 
-
+    /**
+     * Determine whether there's at least one valid end time that starts after $startTime
+     * Used to quickly show if a start time has any matching end time
+     */
     public function hasAvailableEndTime($startTime)
     {
         if (!$this->selectedRoom || !$this->selectedDate) {
             return true;
         }
 
-        // ตรวจสอบว่ามี end time available หรือไม่
         foreach ($this->availableTimes as $endTime) {
             if ($endTime > $startTime && $this->isTimeSlotAvailable($startTime, $endTime)) {
-                return true; // มี end time available อย่างน้อย 1 ช่วง
+                return true; // found at least one valid end time
             }
         }
 
-        return false; // ไม่มี end time available เลย
+        return false; // none found
     }
 
+    /**
+     * Select start or end time. Validates availability and resets end_time when needed.
+     */
     public function selectTime($type, $time)
     {
         $this->resetErrorBag();
 
         if ($type === 'start') {
-            // Validate if start time is available
+            // Validate start time
             if (!$this->isStartTimeAvailable($time)) {
                 $this->addError('start_time', 'This start time is not available. Please choose another time.');
                 return;
@@ -502,12 +581,12 @@ class BookingStepper extends Component
 
             $this->start_time = $time;
 
-            // Reset end time if it's before the new start time or no longer available
+            // If existing end_time is now invalid (before start) or unavailable, reset it
             if ($this->end_time && ($this->end_time <= $this->start_time || !$this->isEndTimeAvailable($this->end_time))) {
                 $this->end_time = null;
             }
         } elseif ($type === 'end') {
-            // Validate if end time is available
+            // Validate end time
             if (!$this->isEndTimeAvailable($time)) {
                 $this->addError('end_time', 'This time slot is not available. Please choose another end time.');
                 return;
@@ -517,6 +596,9 @@ class BookingStepper extends Component
         }
     }
 
+    /**
+     * Reserve time and proceed to next step after final validation of the slot
+     */
     public function reserveTime()
     {
         $this->resetErrorBag();
@@ -526,7 +608,7 @@ class BookingStepper extends Component
             return;
         }
 
-        // Final validation of the complete time slot
+        // Final validation: is slot still available?
         if (!$this->isTimeSlotAvailable($this->start_time, $this->end_time)) {
             $this->addError('reservation', 'The selected time slot is no longer available. Please choose different times.');
             return;
@@ -537,6 +619,9 @@ class BookingStepper extends Component
         $this->nextStep();
     }
 
+    /**
+     * Partial live validation for fields when they are updated
+     */
     public function updated($propertyName)
     {
         $this->validateOnly($propertyName, [
@@ -547,6 +632,9 @@ class BookingStepper extends Component
         ]);
     }
 
+    /**
+     * Computed property: check if basic form fields are valid
+     */
     public function getIsFormValidProperty()
     {
         return !empty($this->name) &&
@@ -557,6 +645,9 @@ class BookingStepper extends Component
             !$this->getErrorBag()->has('phone');
     }
 
+    /**
+     * Show confirmation dialog (client-side) before submitting booking
+     */
     public function confirmBooking()
     {
         $this->validate([
@@ -581,10 +672,14 @@ class BookingStepper extends Component
         );
     }
 
+    /**
+     * Final submission handler - called after client confirms
+     * Includes re-validation and creation of Booking + instrument attachments
+     */
     #[On('submitBooking')]
     public function submitBooking()
     {
-        // ตรวจสอบจำนวนสมาชิกก่อน
+        // Check members capacity first
         if ($this->selectedRoom && $this->members > $this->selectedRoom->capacity) {
             $this->addError('members', "Cannot proceed with booking: Number of members ({$this->members}) exceeds room capacity ({$this->selectedRoom->capacity})");
             return;
@@ -603,13 +698,13 @@ class BookingStepper extends Component
             'additional_request' => 'nullable|string|max:1000'
         ]);
 
-        // ตรวจสอบจำนวนคนไม่เกินความจุของห้อง
+        // Ensure room exists and capacity still valid
         if ($this->members > $this->selectedRoom->capacity) {
             $this->addError('members', "Number of members ({$this->members}) exceeds room capacity ({$this->selectedRoom->capacity})");
             return;
         }
 
-        // ตรวจสอบช่วงเวลาว่าง
+        // Check conflicts again
         $conflictingBooking = Booking::where('room_id', $this->selectedRoom->id)
             ->where('date', $this->selectedDate)
             ->where(function ($query) {
@@ -625,7 +720,7 @@ class BookingStepper extends Component
             return;
         }
 
-        // ตรวจสอบ stock เครื่องดนตรี
+        // Check instrument stock
         foreach ($this->selectedInstruments as $id => $quantity) {
             $instrument = Instrument::find($id);
             if (!$instrument) {
@@ -642,13 +737,13 @@ class BookingStepper extends Component
             }
         }
 
-        // Final validation before creating booking
+        // Final availability check using robust helper
         if (!$this->isTimeSlotAvailable($this->start_time, $this->end_time, $this->room_id, $this->date)) {
             $this->addError('booking', 'The selected time slot is no longer available. Please go back and select different times.');
             return;
         }
 
-        // ตรวจสอบจำนวนสมาชิกอีกครั้งก่อนสร้าง Booking
+        // Re-check capacity using room from DB
         $room = Room::find($this->room_id);
         if ($this->members > $room->capacity) {
             $this->addError('booking', "Cannot create booking: Number of members ({$this->members}) exceeds room capacity ({$room->capacity})");
@@ -672,7 +767,7 @@ class BookingStepper extends Component
                 'status' => 'pending',
             ]);
 
-            // attach Instruments
+            // Attach instruments to booking pivot table with quantity & price
             foreach ($this->selectedInstruments as $id => $quantity) {
                 $instrument = Instrument::find($id);
                 $booking->instruments()->attach($id, [
@@ -689,18 +784,19 @@ class BookingStepper extends Component
                 'color' => 'green',
                 'redirect' => route('profile.bookings'),
             ]);
-
-            // return redirect()->route('profile.bookings');
         } catch (\Exception $e) {
+            // On error, dispatch an error alert
             $this->dispatch('swal:error', [
                 'title' => 'Error!',
                 'text' => 'Failed to reserve this booking. Please try again.',
                 'icon' => 'error'
-
             ]);
         }
     }
 
+    /**
+     * Remove instrument error state and recalculate price
+     */
     public function removeInstrumentError($id)
     {
         unset($this->selectedInstruments[$id]);
@@ -710,6 +806,9 @@ class BookingStepper extends Component
         $this->resetErrorBag('booking');
     }
 
+    /**
+     * Render the Livewire view
+     */
     public function render()
     {
         return view('livewire.booking-stepper');
