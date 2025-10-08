@@ -15,7 +15,7 @@
 
                             <!-- Profile Dropdown -->
                             <div x-data="{ open: false }" class="relative inline-flex">
-                                <button @click="open = !open" <<<<<<< HEAD
+                                <button @click="open = !open"
                                     class="flex items-center space-x-2 bg-tranparent text-white px-4 py-2 rounded-full shadow transition">
                                     <img src="{{ Auth::user()->profile_photo_url }}" alt="{{ Auth::user()->name }}"
                                         class="rounded-full h-10 w-10 object-cover">
@@ -50,6 +50,7 @@
                                     class="flex items-center space-x-2 bg-tranparent text-white px-4 py-2 rounded">
                                     <img src="{{ Auth::user()->profile_photo_url }}" alt="{{ Auth::user()->name }}"
                                         class="rounded-full h-10 w-10 object-cover">
+                                    {{-- <p>{{ Auth::user()->profile_photo_url }}</p> --}}
                                     {{-- <span>{{ Auth::user()->name }}</span> --}}
                                     {{-- <i class="fas fa-chevron-down"></i> --}}
                                 </button>

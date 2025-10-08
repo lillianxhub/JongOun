@@ -20,7 +20,7 @@
 
         <!-- รูป -->
         <div class="hidden md:flex w-1/2 justify-end">
-            <img src="{{ asset('images/rooms/background.jpg') }}" alt="Hero Image"
+            <img src="{{ asset('images/rooms/background_v2.jpg') }}" alt="Hero Image"
                 class="w-full h-full rounded-xl object-cover shadow-lg">
         </div>
     </section>
