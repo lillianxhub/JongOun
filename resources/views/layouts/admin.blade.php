@@ -163,12 +163,12 @@
                         </div>
                         <div class="flex items-center space-x-4">
                             <span class="text-gray-600">Welcome, {{ Auth::user()->name }}</span>
-                            <div class="w-8 h-8 bg-gray-400 rounded-full flex items-center justify-center">
-                                {{-- <span class="text-white text-sm font-medium">
-                                    {{ substr(Auth::user()->name, 0, 1) }}
-                                </span> --}}
+                            <div
+                                class="w-8 h-8 bg-gray-400 rounded-full flex items-center justify-center overflow-hidden">
+                                {{-- <img src="{{ asset('storage/' . Auth::user()->profile_photo_path) }}"
+                                    alt="{{ Auth::user()->name }}" class="w-full h-full object-cover"> --}}
                                 <img src="{{ Auth::user()->profile_photo_url }}" alt="{{ Auth::user()->name }}"
-                                    class="rounded-full">
+                                    class="w-full h-full object-cover">
                             </div>
                         </div>
                     </div>

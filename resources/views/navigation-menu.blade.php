@@ -17,9 +17,10 @@
                             <div x-data="{ open: false }" class="relative inline-flex">
                                 <button @click="open = !open"
                                     class="flex items-center space-x-2 bg-tranparent text-white px-4 py-2 rounded-full shadow transition">
-                                    {{-- <img src="{{ Auth::user()->profile_photo_url }}" alt="{{ Auth::user()->name }}" class="rounded-full h-10 w-10 object-cover"> --}}
-                                    <img src="{{ asset('storage/' . Auth::user()->profile_photo_path) }}"
-                                        alt="{{ Auth::user()->name }}" class="rounded-full h-10 w-10 object-cover">
+                                    <img src="{{ Auth::user()->profile_photo_url }}" alt="{{ Auth::user()->name }}"
+                                        class="rounded-full h-10 w-10 object-cover">
+                                    {{-- <img src="{{ asset('storage/' . Auth::user()->profile_photo_path) }}" --}}
+                                    alt="{{ Auth::user()->name }}" class="rounded-full h-10 w-10 object-cover">
                                 </button>
                                 <div x-show="open" @click.away="open = false"
                                     class="absolute right-0 top-10 mt-2 w-48 bg-dark rounded-lg shadow-lg py-2 z-50">
@@ -47,9 +48,10 @@
                             <div x-data="{ open: false }" class="relative inline-flex">
                                 <button @click="open = !open"
                                     class="flex items-center space-x-2 bg-tranparent text-white px-4 py-2 rounded">
-                                    {{-- <img src="{{ Auth::user()->profile_photo_url }}" alt="{{ Auth::user()->name }}" class="rounded-full h-10 w-10 object-cover"> --}}
-                                    <img src="{{ asset('storage/' . Auth::user()->profile_photo_path) }}"
-                                        alt="{{ Auth::user()->name }}" class="rounded-full h-10 w-10 object-cover">
+                                    <img src="{{ Auth::user()->profile_photo_url }}" alt="{{ Auth::user()->name }}"
+                                        class="rounded-full h-10 w-10 object-cover">
+                                    {{-- <img src="{{ asset('storage/' . Auth::user()->profile_photo_path) }}" --}}
+                                    alt="{{ Auth::user()->name }}" class="rounded-full h-10 w-10 object-cover">
                                 </button>
 
                                 <div x-show="open" @click.away="open = false"
@@ -114,10 +116,8 @@
                             class="block px-3 py-2 rounded-md text-white hover:bg-primary hover:text-white transition">Profile</a>
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
-                            <button type="submit" <<<<<<< HEAD
+                            <button type="submit"
                                 class="w-full text-left px-3 py-2 rounded-md text-red-500 hover:bg-red-50 transition">Logout</button>
-                            =======
-                            class="w-full text-left px-3 py-2 rounded-md text-red-500 hover:bg-red-50">Logout</button>
                         </form>
                     @elseif(auth()->user()->role === 'user')
                         <a href="{{ route('home') }}#service"
@@ -135,7 +135,6 @@
                             @csrf
                             <button type="submit"
                                 class="w-full text-left px-3 py-2 rounded-md text-red-500 hover:bg-red-50">Logout</button>
-                            >>>>>>> dev
                         </form>
                     @endif
                 @else
