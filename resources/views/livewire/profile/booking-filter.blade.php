@@ -39,7 +39,7 @@
                         <div class="flex flex-col md:flex-row gap-2">
 
                             <img src="{{ asset('images/rooms/' . ($booking->room->roomType?->image ?? 'default.jpg')) }}"
-                                alt="" class="h-40 object-cover">
+                                alt="" class="h-fit max-h-48 object-cover">
 
                             <div class="p-1 flex flex-col gap-2">
                                 <h1 class="text-primary font-bold text-md md:text-lg">
@@ -73,11 +73,13 @@
                                     ? 'bg-green-800/50 text-green-600 border-green-600'
                                     : ($booking->status === 'cancelled'
                                         ? 'bg-red-800/50 text-red-600 border-red-600'
-                                        : 'bg-blue-800/50 text-blue-400 border-blue-400') }}">
+                                        : ($booking->status === 'pending'
+                                            ? 'bg-orange-800/50 text-orange-500 border-orange-500'
+                                            : 'bg-blue-800/50 text-blue-400 border-blue-400')) }}">
                                     {{ ucfirst($booking->status) }}
                                 </span>
 
-                                <p class="text-white md:text-right text-xs font-thin md:text-sm">
+                                <p class="text-white md:text-right text-xs font-thin md:text-sm mt-2">
                                     Total Price
                                 </p>
 
@@ -86,7 +88,7 @@
                                 </p>
 
                                 <button
-                                    class="cursor-pointer bg-btn-gradient rounded text-white text-center font-bold px-3 py-1 mt-2"
+                                    class="cursor-pointer bg-btn-gradient rounded text-white text-center font-bold px-3 py-1 mt-4"
                                     @click="Livewire.dispatch('openBookingModal', { bookingId: {{ $booking->id }} })">
                                     View
                                 </button>

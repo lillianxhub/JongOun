@@ -5,6 +5,7 @@ use App\Models\Booking;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\IndexController;
 use App\Http\Controllers\BookingController;
+use Illuminate\Support\Facades\File;
 
 /*
 |--------------------------------------------------------------------------
@@ -36,7 +37,7 @@ Route::middleware([
     Route::get('/profile', function () {
         return view('profile.show');
     })->name('user.profile');
-     
+
     // Admin routes (only accessible to admin users)
     Route::middleware('admin')->prefix('admin')->name('admin.')->group(function () {
         Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
@@ -46,9 +47,16 @@ Route::middleware([
         Route::get('/instruments', [AdminController::class, 'instrument'])->name('instruments');
         // Route::get('/rooms', [AdminController::class, 'rooms'])->name('rooms');
         // Route::get('/users', [AdminController::class, 'users'])->name('users');
-       
+        Route::get('/create-storage-link', function () {
+            $target = storage_path('app/public');
+            $link = public_path('storage');
 
+            if (!file_exists($link)) {
+                File::link($target, $link);
+                return "Symlink created successfully!";
+            }
 
+            return "Symlink already exists.";
+        });
     });
-
 });
