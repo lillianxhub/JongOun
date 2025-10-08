@@ -451,23 +451,25 @@
                             </div>
                         </div>
 
-                        <!-- Submit Button -->
-                        <button wire:click="confirmBooking" @disabled(!$name || !$email || !$phone) @class([
-                            'px-4 py-2 rounded text-white transition-colors duration-200 text-sm md:text-base',
-                            'bg-btn-gradient hover:opacity-90 hover:shadow-lg hover:shadow-primary transition transform hover:-translate-y-1 cursor-pointer' =>
-                                $this->isFormValid,
-                            'bg-white/10 opacity-50 cursor-default' => !$this->isFormValid,
-                        ])>
-                            <span wire:loading.remove wire:target="confirmBooking">Reserve booking</span>
-                            <span wire:loading wire:target="confirmBooking">Processing...</span>
-                        </button>
+                        <!-- Submit Button (Desktop only) -->
+                        <div class="hidden lg:block w-full mt-4">
+                            <button wire:click="confirmBooking" @disabled(!$name || !$email || !$phone)
+                                @class([
+                                    'px-4 py-2 rounded text-white transition-colors duration-200 text-sm md:text-base w-full',
+                                    'bg-btn-gradient hover:opacity-90 hover:shadow-lg hover:shadow-primary transition transform hover:-translate-y-1 cursor-pointer' =>
+                                        $this->isFormValid,
+                                    'bg-white/10 opacity-50 cursor-default' => !$this->isFormValid,
+                                ])>
+                                <span wire:loading.remove wire:target="confirmBooking">Reserve booking</span>
+                                <span wire:loading wire:target="confirmBooking">Processing...</span>
+                            </button>
 
-                        <!-- Form validation status indicator -->
-                        @if (!$this->isFormValid)
-                            <div class="mt-2 text-xs md:text-sm text-gray-600">
-                                Please fill in all required fields correctly to continue.
-                            </div>
-                        @endif
+                            @if (!$this->isFormValid)
+                                <div class="mt-2 text-xs md:text-sm text-gray-600">
+                                    Please fill in all required fields correctly to continue.
+                                </div>
+                            @endif
+                        </div>
                     </div>
                 </div>
 
@@ -534,10 +536,6 @@
                                 ฿ {{ $selectedRoom->price ? number_format($selectedRoom->price, 2) : '-' }}
                             </p>
                         </div>
-                        {{-- <p class="text-xs md:text-sm text-gray-300">
-                            Time in {{ $selectedRoom->name }} :
-                            {{ $start_time && $end_time ? (strtotime($end_time) - strtotime($start_time)) / 3600 . ' hour(s)' : '-' }}
-                        </p> --}}
 
                         @if ($selectedInstruments && count($selectedInstruments) > 0)
 
@@ -568,20 +566,25 @@
                             <p>฿{{ $total_price ? number_format($total_price, 2) : '-' }} </p>
                         </div>
                     </div>
-                    {{-- <div class="w-full">
 
-                        <!-- Submit Button -->
-                        <button wire:click="confirmBooking" @disabled(!$name || !$email || !$phone) @class([
-                            'px-4 py-2 rounded text-white transition-colors duration-200 text-sm md:text-base',
-                            'bg-green-600 hover:bg-green-700 cursor-pointer' => $this->isFormValid,
-                            'bg-gray-300 cursor-default' => !$this->isFormValid,
-                        ])>
-                            <span wire:loading.remove wire:target="confirmBooking">Reserve booking</span>
-                            <span wire:loading wire:target="confirmBooking">Processing...</span>
-                        </button>
+                </div>
+                <!-- Submit Button (Mobile only) -->
+                <div class="block lg:hidden w-full">
+                    <button wire:click="confirmBooking" @disabled(!$name || !$email || !$phone) @class([
+                        'px-4 py-3 rounded text-white transition-colors duration-200 text-base w-full',
+                        'bg-btn-gradient hover:opacity-90 hover:shadow-lg hover:shadow-primary transition transform hover:-translate-y-1 cursor-pointer' =>
+                            $this->isFormValid,
+                        'bg-white/10 opacity-50 cursor-default' => !$this->isFormValid,
+                    ])>
+                        <span wire:loading.remove wire:target="confirmBooking">Reserve booking</span>
+                        <span wire:loading wire:target="confirmBooking">Processing...</span>
+                    </button>
 
-                    </div> --}}
-
+                    @if (!$this->isFormValid)
+                        <div class="mt-2 text-xs text-center text-gray-400">
+                            Please fill in all required fields correctly to continue.
+                        </div>
+                    @endif
                 </div>
             </div>
         @endif
