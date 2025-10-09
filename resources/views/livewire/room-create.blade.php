@@ -9,7 +9,8 @@
     <!-- Add Room Modal -->
     @if ($showAddModal)
         <div class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50" wire:click="closeAdd">
-            <div class="bg-white p-8 rounded-lg shadow-xl w-full max-w-xl relative mx-4" wire:click.stop>
+            <div class="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto relative"
+                wire:click.stop>
                 <!-- Close Button -->
                 <button wire:click="closeAdd"
                     class="absolute top-4 right-4 text-gray-400 hover:text-red-500 text-xl transition-colors"
@@ -17,20 +18,20 @@
                     &times;
                 </button>
 
-                <!-- Modal Header -->
-                <div class="mb-6">
-                    <div class="flex items-center mb-2">
-                        <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center mr-3">
-                            <i class="fa-solid fa-plus text-green-600"></i>
+                <div class="p-8">
+                    <!-- Modal Header -->
+                    <div class="mb-6">
+                        <div class="flex items-center mb-2">
+                            <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center mr-3">
+                                <i class="fa-solid fa-plus text-green-600"></i>
+                            </div>
+                            <h2 class="text-2xl font-bold text-gray-900">Add New Room</h2>
                         </div>
-                        <h2 class="text-2xl font-bold text-gray-900">Add New Room</h2>
+                        <p class="text-gray-600 text-sm">Create a new music room with instruments and pricing</p>
                     </div>
-                    <p class="text-gray-600 text-sm">Create a new music room with instruments and pricing</p>
-                </div>
 
-                <!-- Form -->
-                <form wire:submit.prevent="confirmAdd">
-                    <div class="space-y-4">
+                    <!-- Form -->
+                    <form wire:submit.prevent="confirmAdd" class="space-y-4">
                         <!-- Room Name -->
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2" for="add_name">
@@ -122,21 +123,21 @@
                                 <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                             @enderror
                         </div>
-                    </div>
+                </div>
 
-                    <!-- Form Actions -->
-                    <div class="flex justify-end space-x-3 mt-8 pt-6 border-t border-gray-100">
-                        <button type="button" wire:click="closeAdd"
-                            class="px-6 py-2 text-sm font-medium text-gray-700 bg-gray-100 border border-gray-300 rounded-lg hover:bg-gray-200 hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-all duration-200 flex items-center">
-                            <i class="fa-solid fa-times mr-2"></i>
-                            Cancel
-                        </button>
-                        <button type="button" wire:click="confirmAdd"
-                            class="px-6 py-2 text-sm font-medium text-white bg-green-600 border border-transparent rounded-lg hover:bg-green-700 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all duration-200 transform hover:-translate-y-0.5 flex items-center">
-                            <i class="fa-solid fa-plus mr-2"></i>
-                            Add Room
-                        </button>
-                    </div>
+                <!-- Form Actions -->
+                <div class="flex justify-end space-x-3 sticky bottom-0 bg-white py-8 px-8">
+                    <button type="button" wire:click="closeAdd"
+                        class="px-6 py-2 text-sm font-medium text-gray-700 bg-gray-100 border border-gray-300 rounded-lg hover:bg-gray-200 hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-all duration-200 flex items-center">
+                        <i class="fa-solid fa-times mr-2"></i>
+                        Cancel
+                    </button>
+                    <button type="button" wire:click="confirmAdd"
+                        class="px-6 py-2 text-sm font-medium text-white bg-green-600 border border-transparent rounded-lg hover:bg-green-700 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all duration-200 transform hover:-translate-y-0.5 flex items-center">
+                        <i class="fa-solid fa-plus mr-2"></i>
+                        Add Room
+                    </button>
+                </div>
                 </form>
             </div>
         </div>
