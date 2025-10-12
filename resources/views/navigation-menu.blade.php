@@ -19,8 +19,9 @@
                                     class="flex items-center space-x-2 bg-tranparent text-white px-4 py-2 rounded-full shadow transition">
                                     <img src="{{ Auth::user()->profile_photo_url }}" alt="{{ Auth::user()->name }}"
                                         class="rounded-full h-10 w-10 object-cover">
-                                    {{-- <img src="{{ asset('storage/' . Auth::user()->profile_photo_path) }}" --}}
-                                    alt="{{ Auth::user()->name }}" class="rounded-full h-10 w-10 object-cover">
+                                    <!--On production -->
+                                    {{-- <img src="{{ asset('storage/' . Auth::user()->profile_photo_path) }}"
+                                    alt="{{ Auth::user()->name }}" class="rounded-full h-10 w-10 object-cover"> --}}
                                 </button>
                                 <div x-show="open" @click.away="open = false"
                                     class="absolute right-0 top-10 mt-2 w-48 bg-dark rounded-lg shadow-lg py-2 z-50">
@@ -50,8 +51,10 @@
                                     class="flex items-center space-x-2 bg-tranparent text-white px-4 py-2 rounded">
                                     <img src="{{ Auth::user()->profile_photo_url }}" alt="{{ Auth::user()->name }}"
                                         class="rounded-full h-10 w-10 object-cover">
-                                    {{-- <img src="{{ asset('storage/' . Auth::user()->profile_photo_path) }}" --}}
-                                    alt="{{ Auth::user()->name }}" class="rounded-full h-10 w-10 object-cover">
+
+                                    {{-- On production --}}
+                                    {{-- <img src="{{ asset('storage/' . Auth::user()->profile_photo_path) }}"
+                                    alt="{{ Auth::user()->name }}" class="rounded-full h-10 w-10 object-cover"> --}}
                                 </button>
 
                                 <div x-show="open" @click.away="open = false"
